@@ -1,0 +1,121 @@
+/* ======================================================
+ PUBLIC PAGES
+====================================================== */
+
+
+.landing-page{
+
+    min-height:100vh;
+
+    background:#09090f;
+
+    color:#fff;
+
+    padding:80px 20px;
+
+}
+
+
+.page-container{
+
+    max-width:1200px;
+
+    margin:auto;
+
+}
+
+
+/* HERO */
+
+.page-hero{
+
+    text-align:center;
+
+    margin-bottom:60px;
+
+}
+
+
+.page-hero h1{
+
+    font-size:64px;
+
+    font-weight:900;
+
+    color:#fff;
+
+}
+
+
+.page-hero p{
+
+    max-width:800px;
+
+    margin:auto;
+
+    color:#d1d5db;
+
+    font-size:20px;
+
+    line-height:1.8;
+
+}
+
+
+/* CONTENT CARD */
+
+
+.page-card{
+
+    background:#171a28;
+
+    border:
+
+    1px solid rgba(255,255,255,.08);
+
+    border-radius:20px;
+
+    padding:40px;
+
+    margin-bottom:30px;
+
+}
+
+
+.page-card h2{
+
+    color:#fff;
+
+}
+
+
+.page-card p,
+.page-card li{
+
+    color:#d1d5db;
+
+    line-height:1.8;
+
+}
+
+
+
+/* MOBILE */
+
+
+@media(max-width:700px){
+
+.page-hero h1{
+
+font-size:42px;
+
+}
+
+
+.page-card{
+
+padding:25px;
+
+}
+
+}

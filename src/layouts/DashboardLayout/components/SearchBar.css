@@ -1,0 +1,49 @@
+.search-bar{
+
+    width:500px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:12px 18px;
+
+    background:#f5f6fa;
+
+    border-radius:14px;
+
+    border:1px solid transparent;
+
+    transition:.25s;
+
+}
+
+.search-bar:hover{
+
+    border-color:#d6d6d6;
+
+}
+
+.search-bar:focus-within{
+
+    border-color:#2563eb;
+
+    background:white;
+
+}
+
+.search-bar input{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    font-size:15px;
+
+}

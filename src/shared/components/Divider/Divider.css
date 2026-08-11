@@ -1,0 +1,18 @@
+.divider{
+display:flex;
+align-items:center;
+gap:15px;
+margin:20px 0;
+}
+
+.divider-line{
+flex:1;
+height:1px;
+background:#ddd;
+}
+
+.divider span{
+font-size:13px;
+color:#777;
+white-space:nowrap;
+}

@@ -1,0 +1,19 @@
+module.exports = {
+  REEL_MEDIA_TYPES: {
+    VIDEO: "video",
+    IMAGE: "image"
+  },
+
+  REEL_EVENTS: {
+    REEL_CREATED: "REEL_CREATED",
+    REEL_VIEWED: "REEL_VIEWED",
+    REEL_LIKED: "REEL_LIKED",
+    REEL_SHARED: "REEL_SHARED",
+    REEL_DELETED: "REEL_DELETED"
+  },
+
+  REEL_LIMITS: {
+    MAX_DURATION: 180, // seconds
+    MAX_UPLOAD_SIZE_MB: 100
+  }
+};

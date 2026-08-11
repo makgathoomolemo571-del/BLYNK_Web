@@ -1,0 +1,49 @@
+import { PLANS } from "./constants";
+
+export const FEATURE = {
+
+  CREATE_POST: "CREATE_POST",
+  CREATE_REEL: "CREATE_REEL",
+  CREATE_PODCAST: "CREATE_PODCAST",
+  UPLOAD_EPISODE: "UPLOAD_EPISODE",
+  CREATE_MARKETPLACE: "CREATE_MARKETPLACE_LISTING",
+  APPLY_CREATOR_HIRE: "APPLY_CREATOR_HIRE",
+  APPLY_BUSINESS_FIND: "APPLY_BUSINESS_FIND",
+  VIEW_ANALYTICS: "VIEW_ANALYTICS",
+  GO_LIVE: "GO_LIVE",
+  WITHDRAW_FUNDS: "WITHDRAW_FUNDS"
+
+};
+
+// Example plan map (frontend mirror of backend matrix)
+export const PLAN_MATRIX = {
+
+  FREE_MEMBER: [
+    FEATURE.CREATE_POST,
+    FEATURE.CREATE_REEL
+  ],
+
+  FREE_CREATOR: [
+    FEATURE.CREATE_POST,
+    FEATURE.CREATE_REEL,
+    FEATURE.CREATE_PODCAST
+  ],
+
+  CREATOR_PLUS: [
+    FEATURE.CREATE_POST,
+    FEATURE.CREATE_REEL,
+    FEATURE.CREATE_PODCAST,
+    FEATURE.UPLOAD_EPISODE,
+    FEATURE.VIEW_ANALYTICS,
+    FEATURE.GO_LIVE
+  ]
+
+};
+
+export const canUseFeature = (plan, feature) => {
+
+  const allowed = PLAN_MATRIX[plan] || [];
+
+  return allowed.includes(feature);
+
+};

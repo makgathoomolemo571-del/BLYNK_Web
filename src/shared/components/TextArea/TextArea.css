@@ -1,0 +1,28 @@
+.textarea-group{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.textarea{
+width:100%;
+min-height:120px;
+padding:12px;
+border-radius:8px;
+border:1px solid #ddd;
+resize:vertical;
+font-size:15px;
+outline:none;
+}
+
+.textarea:focus{
+border-color:#2563eb;
+}
+
+.textarea.error{
+border-color:red;
+}
+
+.textarea-group small{
+color:red;
+}

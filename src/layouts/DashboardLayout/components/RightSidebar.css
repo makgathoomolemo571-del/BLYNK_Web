@@ -1,0 +1,299 @@
+/* ==========================================
+   RIGHT SIDEBAR
+========================================== */
+
+.right-sidebar{
+
+    position:fixed;
+
+    top:0;
+
+    right:-360px;
+
+    width:340px;
+
+    height:100vh;
+
+    padding:24px;
+
+    background:#050505;
+
+    border-left:1px solid rgba(255,255,255,.12);
+
+    overflow-y:auto;
+
+    color:white;
+
+    transition:right .35s ease;
+
+    z-index:9999;
+
+    box-sizing:border-box;
+
+}
+
+/* OPEN */
+
+.right-sidebar.open{
+
+    right:0;
+
+}
+
+/* HEADER */
+
+.right-sidebar-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:25px;
+
+}
+
+.right-sidebar-header h2{
+
+    color:white;
+
+    margin:0;
+
+    font-size:20px;
+
+}
+
+/* CLOSE BUTTON */
+
+.close-sidebar{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#6c2cff;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.close-sidebar:hover{
+
+    background:#8b5cf6;
+
+    transform:rotate(90deg);
+
+}
+
+/* ==========================================
+   CARDS
+========================================== */
+
+.sidebar-card{
+
+    background:#1b1b1b;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:18px;
+
+    padding:20px;
+
+    margin-bottom:20px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+
+}
+
+.sidebar-card h3{
+
+    margin-bottom:16px;
+
+    font-size:17px;
+
+    font-weight:700;
+
+    color:white;
+
+}
+
+/* ==========================================
+   LINKS
+========================================== */
+
+.sidebar-link{
+
+    display:block;
+
+    padding:12px 15px;
+
+    border-radius:12px;
+
+    background:#2d2d2d;
+
+    color:white;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.sidebar-link:hover{
+
+    background:#6c2cff;
+
+    color:white;
+
+}
+
+/* ==========================================
+   TREND ITEMS
+========================================== */
+
+.trend-item{
+
+    padding:10px 0;
+
+    color:#ddd;
+
+    cursor:pointer;
+
+}
+
+.trend-item:hover{
+
+    color:#f59e0b;
+
+}
+
+/* ==========================================
+   CREATOR LIST
+========================================== */
+
+.creator-item{
+
+    display:flex;
+
+    gap:12px;
+
+    align-items:center;
+
+    margin-bottom:16px;
+
+}
+
+.creator-item img{
+
+    width:45px;
+
+    height:45px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:2px solid #6c2cff;
+
+}
+
+.creator-item p{
+
+    color:#ccc;
+
+    font-size:13px;
+
+}
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.sidebar-footer{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:14px;
+
+    padding:20px 5px;
+
+    margin-top:30px;
+
+}
+
+.sidebar-footer a{
+
+    color:#b5b5b5;
+
+    text-decoration:none;
+
+    font-size:13px;
+
+}
+
+.sidebar-footer a:hover{
+
+    color:white;
+
+}
+
+.sidebar-footer small{
+
+    width:100%;
+
+    color:#888;
+
+    margin-top:10px;
+
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media(max-width:1200px){
+
+    .right-sidebar{
+
+        width:320px;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .right-sidebar{
+
+        width:100%;
+
+        right:-100%;
+
+    }
+
+    .right-sidebar.open{
+
+        right:0;
+
+    }
+
+}

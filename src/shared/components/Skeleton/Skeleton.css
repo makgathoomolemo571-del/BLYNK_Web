@@ -1,0 +1,26 @@
+.skeleton{
+
+background:linear-gradient(
+90deg,
+#ececec 25%,
+#f6f6f6 50%,
+#ececec 75%
+);
+
+background-size:200% 100%;
+
+animation:skeleton 1.2s infinite;
+
+}
+
+@keyframes skeleton{
+
+0%{
+background-position:200% 0;
+}
+
+100%{
+background-position:-200% 0;
+}
+
+}

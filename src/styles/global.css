@@ -1,0 +1,75 @@
+/* ======================================================
+   GLOBAL STYLES
+====================================================== */
+
+@import "./reset.css";
+@import "./variables.css";
+@import "./typography.css";
+
+
+@import "./pages.css";
+@import "./app.css";
+
+
+*{
+    box-sizing:border-box;
+}
+
+
+html,
+body,
+#root{
+    min-height:100%;
+    margin:0;
+}
+
+
+body{
+
+    background:#09090f;
+
+    color:#fff;
+
+    font-family:
+    Inter,
+    Arial,
+    sans-serif;
+
+}
+
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+
+button,
+input,
+textarea,
+select{
+
+    font-family:inherit;
+
+}
+
+
+@keyframes slide-up {
+
+from{
+    transform:translateY(100%);
+}
+
+to{
+    transform:translateY(0);
+}
+
+}
+
+
+.animate-slide-up{
+
+    animation:
+    slide-up .25s ease;
+
+}

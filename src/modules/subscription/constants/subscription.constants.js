@@ -1,0 +1,22 @@
+const SUBSCRIPTION_STATUS = {
+  ACTIVE: "active",
+  EXPIRED: "expired",
+  CANCELLED: "cancelled",
+};
+
+const BILLING_CYCLE = {
+  MONTHLY: "monthly",
+  YEARLY: "yearly",
+};
+
+const SUBSCRIPTION_ACTIONS = {
+  CREATE: "SUBSCRIPTION_CREATED",
+  UPGRADE: "SUBSCRIPTION_UPGRADED",
+  CANCEL: "SUBSCRIPTION_CANCELLED",
+};
+
+module.exports = {
+  SUBSCRIPTION_STATUS,
+  BILLING_CYCLE,
+  SUBSCRIPTION_ACTIONS,
+};

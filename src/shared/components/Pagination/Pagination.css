@@ -1,0 +1,35 @@
+.pagination{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:15px;
+
+padding:20px;
+
+}
+
+.pagination button{
+
+padding:10px 20px;
+
+cursor:pointer;
+
+border-radius:8px;
+
+border:1px solid #ddd;
+
+background:white;
+
+}
+
+.pagination button:disabled{
+
+opacity:.4;
+
+cursor:not-allowed;
+
+}

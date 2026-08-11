@@ -1,0 +1,31 @@
+:root {
+
+  /* PRIMARY BRAND */
+  --primary: #6C5CE7;
+  --primary-dark: #4B3FCF;
+  --primary-light: #A29BFE;
+
+  /* SECONDARY */
+  --secondary: #00CEC9;
+  --secondary-dark: #00A8A5;
+
+  /* BACKGROUNDS */
+  --bg: #0F111A;
+  --bg-soft: #161A25;
+  --card: #1C2130;
+
+  /* TEXT */
+  --text: #f1ebeb;
+  --text-muted: #939bbb;
+  --text-dark: #eeeff1;
+
+  /* STATUS */
+  --success: #00B894;
+  --warning: #FDCB6E;
+  --error: #FF6B6B;
+  --info: #74B9FF;
+
+  /* BORDERS */
+  --border: rgba(255,255,255,0.08);
+
+}

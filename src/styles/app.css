@@ -1,0 +1,56 @@
+/* ======================================================
+ APP DASHBOARD
+====================================================== */
+
+
+.dashboard{
+
+min-height:100vh;
+
+background:#fff;
+
+color:#111;
+
+}
+
+
+.sidebar{
+
+background:#ececf0;
+
+color:#fff;
+
+}
+
+
+.card{
+
+background:#ffffff;
+
+border-radius:16px;
+
+border:1px solid #ffffff;
+
+padding:24px;
+
+}
+
+
+.btn-primary{
+
+background:#6c4cff;
+
+color:white;
+
+padding:12px 25px;
+
+border-radius:10px;
+
+}
+
+
+.btn-primary:hover{
+
+background:#5938ff;
+
+}

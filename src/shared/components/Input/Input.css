@@ -1,0 +1,45 @@
+.input-group{
+
+display:flex;
+
+flex-direction:column;
+
+gap:6px;
+
+width:100%;
+
+}
+
+.input-group label{
+
+font-weight:600;
+
+}
+
+.input-group input{
+
+padding:12px;
+
+border:1px solid #ccc;
+
+border-radius:8px;
+
+outline:none;
+
+transition:.2s;
+
+}
+
+.input-group input:focus{
+
+border-color:#1e88e5;
+
+}
+
+.input-error{
+
+font-size:13px;
+
+color:#ff3b30;
+
+}

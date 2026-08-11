@@ -1,0 +1,31 @@
+export const APP_NAME = "BLYNK";
+
+export const TOKEN_KEY = "token";
+
+export const USER_KEY = "user";
+
+export const ROLES = {
+  MEMBER: "member",
+  CREATOR: "creator",
+  BUSINESS: "business",
+  ADMIN: "admin",
+  SUPERADMIN: "superadmin"
+};
+
+export const PLANS = {
+  FREE_MEMBER: "FREE_MEMBER",
+  FREE_CREATOR: "FREE_CREATOR",
+  FREE_BUSINESS: "FREE_BUSINESS",
+
+  MEMBER_BASIC: "MEMBER_BASIC",
+  MEMBER_PLUS: "MEMBER_PLUS",
+  MEMBER_VIP: "MEMBER_VIP",
+
+  CREATOR_BASIC: "CREATOR_BASIC",
+  CREATOR_PLUS: "CREATOR_PLUS",
+  CREATOR_PRO: "CREATOR_PRO",
+
+  BUSINESS_BASIC: "BUSINESS_BASIC",
+  BUSINESS_PRO: "BUSINESS_PRO",
+  BUSINESS_ENTERPRISE: "BUSINESS_ENTERPRISE"
+};
