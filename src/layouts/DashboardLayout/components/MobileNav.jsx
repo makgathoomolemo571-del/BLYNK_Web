@@ -25,13 +25,13 @@ export default function MobileNav() {
       </NavLink>
 
       <NavLink
-        to="/create"
+        to="/posts/create"
         className="create-mobile"
       >
         <CirclePlus size={34} />
       </NavLink>
 
-      <NavLink to="/messages">
+      <NavLink to="/conversations">
         <MessageCircle size={24} />
       </NavLink>
 

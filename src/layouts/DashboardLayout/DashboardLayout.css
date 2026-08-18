@@ -782,76 +782,194 @@ p{
 
 
 
-@media(max-width:768px){
+/* ==========================================
+   BLYNK MOBILE DASHBOARD
+========================================== */
 
+@media screen and (max-width: 768px) {
 
-.dashboard{
+  html,
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
 
+  .dashboard {
+    display: block;
+    width: 100%;
+    min-height: 100vh;
+    padding-bottom: 75px;
+    overflow-x: hidden;
+  }
 
- display:block;
+  .sidebar {
+    display: none !important;
+  }
 
+  .right-sidebar {
+    display: none !important;
+  }
 
- padding-bottom:70px;
+  .dashboard-center {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
 
+  .dashboard-content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 12px;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
 
-}
+  .dashboard-content > * {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    border-radius: 14px;
+  }
 
+  .card,
+  .page-card,
+  .panel,
+  .feed-post {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 15px;
+    border-radius: 14px;
+  }
 
+  /* TOPBAR */
 
-.sidebar{
+  .topbar,
+  .dashboard-center > header {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
 
+  /* MOBILE NAV */
 
- display:none;
+  .mobile-nav {
+    display: flex !important;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
+    width: 100%;
+    height: 65px;
 
-}
+    background: white;
 
+    border-top: 1px solid var(--border);
 
+    z-index: 9999;
 
-.dashboard-content{
+    padding:
+      6px
+      env(safe-area-inset-right)
+      calc(6px + env(safe-area-inset-bottom))
+      env(safe-area-inset-left);
 
+    box-sizing: border-box;
 
- padding:15px;
+    align-items: center;
+    justify-content: space-around;
+  }
 
+  /* POST */
 
-}
+  .post-header {
+    gap: 8px;
+  }
 
+  .post-user {
+    min-width: 0;
+    flex: 1;
+  }
 
+  .post-caption {
+    font-size: 14px;
+    line-height: 1.5;
+  }
 
-.mobile-nav{
+  /* MEDIA */
 
+  .post-media,
+  .image-wrapper,
+  .video-wrapper,
+  .media-container,
+  .reel-container {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
 
- display:flex;
+  .post-media img,
+  .image-wrapper img {
+    width: 100%;
+    height: auto;
+    max-height: 420px;
+    object-fit: cover;
+  }
 
+  .cover-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
 
- position:fixed;
+  video {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 500px;
+  }
 
+  .reel-video {
+    width: 100%;
+    max-width: 100%;
+    max-height: 600px;
+  }
 
- bottom:0;
+  /* BUTTONS */
 
+  button,
+  .btn {
+    max-width: 100%;
+  }
 
- left:0;
+  /* BUTTON GROUPS */
 
+  .btn-group {
+    width: 100%;
+    flex-wrap: wrap;
+  }
 
- right:0;
+  /* GRID */
 
+  .media-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
 
- height:65px;
-
-
- background:white;
-
-
- border-top:
- 1px solid var(--border);
-
-
- z-index:100;
-
-
-}
-
-
+  .media-grid img {
+    height: 150px;
+  }
 
 }
 
