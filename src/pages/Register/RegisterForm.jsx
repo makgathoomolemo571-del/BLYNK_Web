@@ -75,7 +75,7 @@ export default function RegisterForm() {
         password: "",
         confirmPassword: "",
         role: "member",
-       
+       referralCode: "",
         acceptTerms: false,
         acceptPrivacy: false,
         marketingConsent: false
@@ -245,6 +245,21 @@ export default function RegisterForm() {
         value={form.confirmPassword}
         onChange={handleChange}
       />
+
+      <input
+    name="referralCode"
+    placeholder="Referral Code (optional)"
+    value={form.referralCode}
+    onChange={handleChange}
+/>
+
+<p style={{
+    fontSize: "13px",
+    color: "#6b7280",
+    marginTop: "-5px"
+}}>
+    Have a BLYNK referral number? Enter it here.
+</p>
 
       <label>
         <input

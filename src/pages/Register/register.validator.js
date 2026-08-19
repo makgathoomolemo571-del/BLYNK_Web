@@ -12,6 +12,13 @@ export const registerSchema = z.object({
   password: z.string()
     .min(8, "Password too short"),
 
-  role: z.enum(["member", "creator", "business"])
+  role: z.enum(["member", "creator", "business"]),
+
+  referralCode: z
+    .string()
+    .trim()
+    .max(30)
+    .optional()
+    .or(z.literal("")),
 
 });
