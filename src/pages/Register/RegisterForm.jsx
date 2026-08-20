@@ -27,6 +27,7 @@ export default function RegisterForm() {
     confirmPassword: "",
     role: "member",
     plan: "FREE_MEMBER",
+    referralCode: "",
     acceptTerms: false,
     acceptPrivacy: false,
     marketingConsent: false
