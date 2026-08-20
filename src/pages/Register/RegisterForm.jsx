@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast";
 export default function RegisterForm() {
   const navigate = useNavigate();
   const { register, loading } = useRegister();
-
+const [referralNumber, setReferralNumber] = useState("");
   const [error, setError] = useState("");
 
   const [form, setForm] = useState({
@@ -58,7 +58,7 @@ export default function RegisterForm() {
 
    try {
     const response = await register(form);
-
+setReferralNumber(response.referralCode || "");
     toast.success(response.message);
 
     setForm({
@@ -302,6 +302,46 @@ export default function RegisterForm() {
           {error}
         </div>
       )}
+
+      {referralNumber && (
+  <div
+    style={{
+      marginTop: "20px",
+      padding: "20px",
+      background: "#f3e8ff",
+      border: "1px solid #8b5cf6",
+      borderRadius: "12px",
+      textAlign: "center"
+    }}
+  >
+    <div
+      style={{
+        fontSize: "13px",
+        fontWeight: "600",
+        color: "#6b21a8",
+        marginBottom: "8px"
+      }}
+    >
+      YOUR BLYNK REFERRAL NUMBER
+    </div>
+
+    <div
+      style={{
+        fontSize: "24px",
+        fontWeight: "800",
+        color: "#5b21b6",
+        letterSpacing: "1px"
+      }}
+    >
+      {referralNumber}
+    </div>
+
+    <p style={{ marginTop: "10px" }}>
+      Share this number with friends. When they register using your
+      referral number, you both receive your referral rewards.
+    </p>
+  </div>
+)}
 
       <button
         type="submit"
