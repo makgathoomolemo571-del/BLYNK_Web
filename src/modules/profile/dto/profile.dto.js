@@ -12,6 +12,8 @@ const ProfileDTO = (profile) => ({
   socials: profile.socials,
   visibility: profile.visibility,
   createdAt: profile.createdAt,
+  referralCode: data.user.referralCode || null,
+          referredBy: data.user.referredBy || null,
 });
 
 module.exports = ProfileDTO;
