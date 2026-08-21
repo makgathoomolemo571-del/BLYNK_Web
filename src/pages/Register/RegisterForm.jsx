@@ -58,7 +58,13 @@ const [referralNumber, setReferralNumber] = useState("");
 
    try {
     const response = await register(form);
-setReferralNumber(response.referralCode || "");
+
+
+setReferralNumber(
+  response.referralCode ||
+  response.user?.referralCode ||
+  ""
+);
     toast.success(response.message);
 
     setForm({
