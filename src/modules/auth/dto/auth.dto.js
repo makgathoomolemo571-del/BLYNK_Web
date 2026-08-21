@@ -30,7 +30,7 @@ fromRegister: (data) => {
         plan:
             data.plan || null,
 
-      referralCode: data.user?.referralCode || null
+      referralCode: user?.referralCode || null
 
         message:
             data.message

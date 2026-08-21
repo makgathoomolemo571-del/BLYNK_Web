@@ -69,12 +69,50 @@ console.log("USER BANNER =", profile.user?.coverBanner);
   return (
   <div className="min-h-screen bg-zinc-100 dark:bg-black">
 
-       <ProfileHeader
-      profile={profile}
-      user={profile.user}
-      stats={profile.stats}
-      isOwnProfile={isOwnProfile}
-    />
+      <ProfileHeader
+  profile={profile}
+  user={profile.user}
+  stats={profile.stats}
+  isOwnProfile={isOwnProfile}
+/>
+
+{profile.user?.referralCode && (
+  <div className="max-w-6xl mx-auto px-4 mt-4">
+    <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
+
+      <div className="flex items-center justify-between gap-4">
+
+        <div>
+          <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
+            BLYNK REFERRAL NUMBER
+          </p>
+
+          <p className="text-2xl font-bold tracking-wider text-purple-600">
+            {profile.user.referralCode}
+          </p>
+
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+            Share your referral number with friends and earn referral rewards.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            navigator.clipboard.writeText(
+              profile.user.referralCode
+            );
+          }}
+          className="px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700"
+        >
+          Copy
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+)}
 
     <div className="max-w-6xl mx-auto">
 

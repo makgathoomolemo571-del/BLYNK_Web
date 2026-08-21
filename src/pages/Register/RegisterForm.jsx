@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast";
 export default function RegisterForm() {
   const navigate = useNavigate();
   const { register, loading } = useRegister();
-const [referralNumber, setReferralNumber] = useState("");
+
   const [error, setError] = useState("");
 
   const [form, setForm] = useState({
@@ -59,12 +59,6 @@ const [referralNumber, setReferralNumber] = useState("");
    try {
     const response = await register(form);
 
-
-setReferralNumber(
-  response.referralCode ||
-  response.user?.referralCode ||
-  ""
-);
     toast.success(response.message);
 
     setForm({
