@@ -19,7 +19,7 @@ const [activeTab, setActiveTab] = useState("posts");
   const { profile, loading, error } = useSelector(
     (state) => state.profile
   );
-
+const [referralNumber, setReferralNumber] = useState("");
   const authUser = useSelector((state) => state.auth.user);
 
   useEffect(() => {
