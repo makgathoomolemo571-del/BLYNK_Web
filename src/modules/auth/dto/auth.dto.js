@@ -13,21 +13,30 @@ export const AuthDTO = {
 
   },
 
-  fromRegister: (data) => {
+fromRegister: (data) => {
 
     return {
-      user: UserDTO(data.user),
-      verificationRequired: data.verificationRequired,
-      message: data.message,
-       referralCode:
-        data.referralCode ||
-        data.user?.referralCode ||
-        null,
-      referral:
-        data.referral || null
+        user: UserDTO(data.user),
+
+        verificationRequired:
+            data.verificationRequired,
+
+        paymentRequired:
+            data.paymentRequired || false,
+
+        amount:
+            data.amount || 0,
+
+        plan:
+            data.plan || null,
+
+      referralCode: data.user?.referralCode || null
+
+        message:
+            data.message
     };
 
-  },
+},
 
   fromMe: (data) => {
 
