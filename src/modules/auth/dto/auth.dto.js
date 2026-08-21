@@ -18,7 +18,13 @@ export const AuthDTO = {
     return {
       user: UserDTO(data.user),
       verificationRequired: data.verificationRequired,
-      message: data.message
+      message: data.message,
+       referralCode:
+        data.referralCode ||
+        data.user?.referralCode ||
+        null,
+      referral:
+        data.referral || null
     };
 
   },

@@ -22,7 +22,13 @@ const RegisterPage = () => {
         navigate("/verify-email", {
           state: {
             email: data.email,
-            message: response.message
+            message: response.message,
+             referralCode:
+        data.referralCode ||
+        data.user?.referralCode ||
+        null,
+      referral:
+        data.referral || null
           }
         });
       }
