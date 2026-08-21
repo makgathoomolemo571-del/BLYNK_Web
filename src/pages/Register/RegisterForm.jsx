@@ -303,45 +303,7 @@ export default function RegisterForm() {
         </div>
       )}
 
-      {referralNumber && (
-  <div
-    style={{
-      marginTop: "20px",
-      padding: "20px",
-      background: "#f3e8ff",
-      border: "1px solid #8b5cf6",
-      borderRadius: "12px",
-      textAlign: "center"
-    }}
-  >
-    <div
-      style={{
-        fontSize: "13px",
-        fontWeight: "600",
-        color: "#6b21a8",
-        marginBottom: "8px"
-      }}
-    >
-      YOUR BLYNK REFERRAL NUMBER
-    </div>
-
-    <div
-      style={{
-        fontSize: "24px",
-        fontWeight: "800",
-        color: "#5b21b6",
-        letterSpacing: "1px"
-      }}
-    >
-      {referralNumber}
-    </div>
-
-    <p style={{ marginTop: "10px" }}>
-      Share this number with friends. When they register using your
-      referral number, you both receive your referral rewards.
-    </p>
-  </div>
-)}
+    
 
       <button
         type="submit"
