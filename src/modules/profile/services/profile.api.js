@@ -55,6 +55,11 @@ const profileAPI = {
     });
 },
 
+  getMyReferral: () =>
+    API.get("/referral/me"),
+
+  generateReferral: () =>
+    API.post("/referral/generate"),
 
   updateProfile: (data) =>
     API.put("/profile/me", data),
