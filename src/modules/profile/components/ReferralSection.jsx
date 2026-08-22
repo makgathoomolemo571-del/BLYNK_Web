@@ -1,21 +1,29 @@
-import React, { useEffect, useState } from "react";
-import api from "../api/api";
+import { useEffect, useState } from "react";
+import profileAPI from "../services/profile.api.js";
 
 export default function ReferralSection() {
 
   const [referralCode, setReferralCode] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // ==========================================
+  // FETCH EXISTING REFERRAL
+  // ==========================================
 
   useEffect(() => {
 
-    const loadReferral = async () => {
+    const fetchReferral = async () => {
 
       try {
 
-        const response = await api.get("/referral/me");
+        setError("");
+
+        const response =
+          await profileAPI.getMyReferral();
 
         console.log(
-          "REFERRAL ME:",
+          "REFERRAL MINE RESPONSE:",
           response.data
         );
 
@@ -23,44 +31,58 @@ export default function ReferralSection() {
           response.data?.referralCode || null
         );
 
-      } catch (error) {
+      } catch (err) {
 
         console.error(
-          "REFERRAL ME ERROR:",
-          error.response?.data || error.message
+          "FAILED TO FETCH REFERRAL:",
+          err.response?.data || err.message
         );
 
+        setError(
+          err.response?.data?.message ||
+          "Could not load referral number."
+        );
       }
-
     };
 
-    loadReferral();
+    fetchReferral();
 
   }, []);
+
+
+  // ==========================================
+  // GENERATE REFERRAL
+  // ==========================================
 
   const generateReferral = async () => {
 
     try {
 
       setLoading(true);
+      setError("");
 
       const response =
-        await api.post("/referral/generate");
+        await profileAPI.generateReferral();
 
       console.log(
-        "REFERRAL GENERATED:",
+        "REFERRAL GENERATE RESPONSE:",
         response.data
       );
 
       setReferralCode(
-        response.data?.referralCode
+        response.data?.referralCode || null
       );
 
-    } catch (error) {
+    } catch (err) {
 
       console.error(
-        "GENERATE REFERRAL ERROR:",
-        error.response?.data || error.message
+        "FAILED TO GENERATE REFERRAL:",
+        err.response?.data || err.message
+      );
+
+      setError(
+        err.response?.data?.message ||
+        "Could not generate referral number."
       );
 
     } finally {
@@ -68,18 +90,37 @@ export default function ReferralSection() {
       setLoading(false);
 
     }
-
   };
+
+
+  // ==========================================
+  // COPY
+  // ==========================================
 
   const copyReferral = async () => {
 
     if (!referralCode) return;
 
-    await navigator.clipboard.writeText(
-      referralCode
-    );
+    try {
 
+      await navigator.clipboard.writeText(
+        referralCode
+      );
+
+    } catch (err) {
+
+      console.error(
+        "COPY FAILED:",
+        err
+      );
+
+    }
   };
+
+
+  // ==========================================
+  // UI
+  // ==========================================
 
   return (
 
@@ -87,16 +128,18 @@ export default function ReferralSection() {
 
       <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
 
+        <h3 className="text-lg font-bold mb-4">
+          BLYNK Referrals
+        </h3>
+
+
         {!referralCode ? (
 
           <div>
 
-            <p className="text-sm font-semibold text-zinc-500">
-              BLYNK REFERRALS
-            </p>
-
-            <p className="text-sm text-zinc-500 mt-1 mb-4">
-              Generate your personal BLYNK referral number.
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
+              Generate your personal BLYNK referral
+              number and share it with friends.
             </p>
 
             <button
@@ -118,29 +161,40 @@ export default function ReferralSection() {
 
             <div>
 
-              <p className="text-sm font-semibold text-zinc-500">
-                BLYNK REFERRAL NUMBER
+              <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
+                YOUR BLYNK REFERRAL NUMBER
               </p>
 
               <p className="text-2xl font-bold tracking-wider text-purple-600">
                 {referralCode}
               </p>
 
-              <p className="text-sm text-zinc-500 mt-1">
-                Share this number with friends.
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+                Share this number with friends and earn
+                referral rewards.
               </p>
 
             </div>
 
+
             <button
               type="button"
               onClick={copyReferral}
-              className="px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold"
+              className="px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700"
             >
               Copy
             </button>
 
           </div>
+
+        )}
+
+
+        {error && (
+
+          <p className="text-red-500 text-sm mt-3">
+            {error}
+          </p>
 
         )}
 
