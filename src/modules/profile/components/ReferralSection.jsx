@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import profileAPI from "../store/profileAPI";
 
 export default function ReferralSection() {
 
@@ -25,10 +25,7 @@ export default function ReferralSection() {
 
                 setError("");
 
-                const response =
-                    await api.get(
-                        "/referral/me"
-                    );
+                const response = await profileAPI.getMyReferral();
 
                 console.log(
                     "REFERRAL MINE RESPONSE:",
@@ -69,10 +66,7 @@ export default function ReferralSection() {
             setLoading(true);
             setError("");
 
-            const response =
-                await api.post(
-                    "/referral/generate"
-                );
+            const response = await profileAPI.generateReferral();
 
             console.log(
                 "REFERRAL CREATE RESPONSE:",
