@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 
 export default function ReferralSection() {
 
@@ -9,10 +9,14 @@ export default function ReferralSection() {
     const [loading, setLoading] =
         useState(false);
 
+    const [error, setError] =
+        useState("");
 
-    // =====================================================
+
+
+    // =================================================
     // FETCH EXISTING REFERRAL
-    // =====================================================
+    // =================================================
 
     useEffect(() => {
 
@@ -20,13 +24,20 @@ export default function ReferralSection() {
 
             try {
 
+                setError("");
+
                 const response =
-                    await axios.get(
+                    await api.get(
                         "/api/referral/me"
                     );
 
+                console.log(
+                    "REFERRAL MINE RESPONSE:",
+                    response.data
+                );
+
                 setReferralCode(
-                    response.data.referralCode
+                    response.data.referralCode || null
                 );
 
             } catch (error) {
@@ -36,6 +47,9 @@ export default function ReferralSection() {
                     error
                 );
 
+                setError(
+                    "Unable to load referral number."
+                );
             }
         };
 
@@ -44,23 +58,25 @@ export default function ReferralSection() {
     }, []);
 
 
-    // =====================================================
+
+    // =================================================
     // GENERATE REFERRAL
-    // =====================================================
+    // =================================================
 
     const generateReferral = async () => {
 
         try {
 
             setLoading(true);
+            setError("");
 
             const response =
-                await axios.post(
+                await api.post(
                     "/api/referral/generate"
                 );
 
             console.log(
-                "GENERATED REFERRAL:",
+                "REFERRAL CREATE RESPONSE:",
                 response.data
             );
 
@@ -75,6 +91,11 @@ export default function ReferralSection() {
                 error
             );
 
+            setError(
+                error.response?.data?.message ||
+                "Unable to generate referral number."
+            );
+
         } finally {
 
             setLoading(false);
@@ -82,22 +103,6 @@ export default function ReferralSection() {
         }
     };
 
-
-    // =====================================================
-    // COPY
-    // =====================================================
-
-    const copyReferral = async () => {
-
-        if (!referralCode) return;
-
-        await navigator.clipboard.writeText(
-            referralCode
-        );
-
-        alert("Referral number copied!");
-
-    };
 
 
     return (
@@ -113,18 +118,18 @@ export default function ReferralSection() {
 
                 {!referralCode ? (
 
-                    <div className="mt-3">
+                    <div>
 
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
-                            Generate your personal BLYNK referral number
-                            and share it with your friends.
+                        <p className="text-sm text-zinc-500 mt-2">
+                            Generate your personal BLYNK referral number and share it with friends.
                         </p>
+
 
                         <button
                             type="button"
                             onClick={generateReferral}
                             disabled={loading}
-                            className="px-5 py-3 rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700 disabled:opacity-50"
+                            className="mt-4 px-5 py-3 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 disabled:opacity-50"
                         >
 
                             {loading
@@ -133,35 +138,45 @@ export default function ReferralSection() {
 
                         </button>
 
+
+                        {error && (
+
+                            <p className="mt-3 text-sm text-red-500">
+                                {error}
+                            </p>
+
+                        )}
+
                     </div>
 
                 ) : (
 
-                    <div className="mt-3">
+                    <div className="flex items-center justify-between gap-4 mt-3">
 
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                            Your BLYNK Referral Number
-                        </p>
+                        <div>
 
-                        <div className="flex items-center gap-4 mt-2">
+                            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                                Your BLYNK Referral Number
+                            </p>
 
-                            <strong className="text-2xl font-bold tracking-wider text-purple-600">
+                            <p className="text-2xl font-bold tracking-wider text-purple-600">
                                 {referralCode}
-                            </strong>
-
-                            <button
-                                type="button"
-                                onClick={copyReferral}
-                                className="px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700"
-                            >
-                                Copy
-                            </button>
+                            </p>
 
                         </div>
 
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
-                            Share this number with friends and earn referral rewards.
-                        </p>
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                navigator.clipboard.writeText(
+                                    referralCode
+                                )
+                            }
+                            className="px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700"
+                        >
+                            Copy
+                        </button>
 
                     </div>
 

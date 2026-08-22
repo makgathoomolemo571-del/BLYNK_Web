@@ -237,10 +237,8 @@ const ProfilePage = () => {
           REFERRAL NUMBER
       ================================================= */}
 
-      {isOwnProfile && (
-  <div className="max-w-6xl mx-auto px-4 mt-4">
-    <ReferralSection />
-  </div>
+     {isOwnProfile && (
+  <ReferralSection />
 )}
 
       {/* =================================================
