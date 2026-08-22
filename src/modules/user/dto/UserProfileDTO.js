@@ -25,6 +25,10 @@ const UserProfileDTO = (profile, user) => ({
 
   createdAt: profile.createdAt,
   updatedAt: profile.updatedAt,
+  referralCode: user.referralCode || null,
+referredBy: user.referredBy || null,
+subscriptionPlan: user.subscriptionPlan || null,
+emailVerified: user.emailVerified || false,
 });
 
 module.exports = UserProfileDTO;
