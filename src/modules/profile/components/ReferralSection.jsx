@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../api";
+import axios from "axios";
 
 export default function ReferralSection() {
 
