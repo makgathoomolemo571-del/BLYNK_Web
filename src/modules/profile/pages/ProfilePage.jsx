@@ -6,7 +6,7 @@ import {
   fetchProfile,
   fetchMyProfile,
 } from "../store/profileActions";
-
+import ReferralSection from "../components/ReferralSection";
 import ProfileHeader from "../components/ProfileHeader";
 import ProfileStats from "../components/ProfileStats";
 import ProfileBio from "../components/ProfileBio";
