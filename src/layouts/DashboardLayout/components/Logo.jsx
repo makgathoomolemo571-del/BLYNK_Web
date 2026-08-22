@@ -5,29 +5,29 @@ import blynkLogo from "../../../assets/logo.png";
 
 export default function Logo() {
   return (
-    <Link to="/feed" className="blynk-logo">
+   <button
+  type="button"
+  className={`sidebar-logo ${open ? "expanded" : "collapsed"}`}
+  onClick={onToggle}
+  aria-label={
+    open
+      ? "Collapse sidebar"
+      : "Expand sidebar"
+  }
+>
 
-      
+  <img
+    src={logo}
+    alt="BLYNK"
+    className="logo"
+  />
 
-      {
-      <img
-        src={blynkLogo}
-        alt="BLYNK"
-      />
-      }
+  {open && (
+    <h1 className="logo-text">
+      BLYNK
+    </h1>
+  )}
 
-      <div className="logo-circle">
-        B
-      </div>
-
-      <div className="logo-text">
-
-        <span>BLYNK</span>
-
-        <span>Connect • Create • Earn</span>
-
-      </div>
-
-    </Link>
+</button>
   );
 }

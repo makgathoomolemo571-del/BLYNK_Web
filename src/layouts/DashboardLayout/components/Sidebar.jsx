@@ -110,7 +110,10 @@ const menu = [
   }
 ];
 
-export default function Sidebar() {
+export default function Sidebar({
+  open,
+  onToggle
+}) {
 
   const dispatch = useDispatch();
 const navigate = useNavigate();
@@ -163,7 +166,9 @@ const navigate = useNavigate();
             >
               <Icon size={20} />
 
-              <span>{item.title}</span>
+{open && (
+  <span>{item.title}</span>
+)}
 
             </NavLink>
 
@@ -174,11 +179,14 @@ const navigate = useNavigate();
       </nav>
 
      <button
-    className="logout-btn"
-    onClick={handleLogout}
+  className="logout-btn"
+  onClick={handleLogout}
 >
-    <LogOut size={18} />
+  <LogOut size={18} />
+
+  {open && (
     <span>Logout</span>
+  )}
 </button>
 
     </aside>
