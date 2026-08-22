@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import profileAPI from "../services/profileAPI";
+import profileAPI from "../services/profile.api.js";
 
 export default function ReferralSection() {
 
