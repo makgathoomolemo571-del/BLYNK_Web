@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/api";
 
 export default function ReferralSection() {
 
@@ -11,7 +11,6 @@ export default function ReferralSection() {
 
     const [error, setError] =
         useState("");
-
 
 
     // =================================================
@@ -28,7 +27,7 @@ export default function ReferralSection() {
 
                 const response =
                     await api.get(
-                        "/api/referral/me"
+                        "/referral/me"
                     );
 
                 console.log(
@@ -37,14 +36,15 @@ export default function ReferralSection() {
                 );
 
                 setReferralCode(
-                    response.data.referralCode || null
+                    response.data?.referralCode || null
                 );
 
             } catch (error) {
 
                 console.error(
                     "FAILED TO FETCH REFERRAL:",
-                    error
+                    error.response?.data ||
+                    error.message
                 );
 
                 setError(
@@ -56,7 +56,6 @@ export default function ReferralSection() {
         fetchReferral();
 
     }, []);
-
 
 
     // =================================================
@@ -72,7 +71,7 @@ export default function ReferralSection() {
 
             const response =
                 await api.post(
-                    "/api/referral/generate"
+                    "/referral/generate"
                 );
 
             console.log(
@@ -81,14 +80,15 @@ export default function ReferralSection() {
             );
 
             setReferralCode(
-                response.data.referralCode
+                response.data?.referralCode || null
             );
 
         } catch (error) {
 
             console.error(
                 "FAILED TO GENERATE REFERRAL:",
-                error
+                error.response?.data ||
+                error.message
             );
 
             setError(
@@ -104,6 +104,9 @@ export default function ReferralSection() {
     };
 
 
+    // =================================================
+    // UI
+    // =================================================
 
     return (
 
@@ -123,7 +126,6 @@ export default function ReferralSection() {
                         <p className="text-sm text-zinc-500 mt-2">
                             Generate your personal BLYNK referral number and share it with friends.
                         </p>
-
 
                         <button
                             type="button"
