@@ -3,12 +3,15 @@ import axios from "axios";
 
 export default function ReferralSection() {
 
-    const [referralCode, setReferralCode] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [referralCode, setReferralCode] =
+        useState(null);
+
+    const [loading, setLoading] =
+        useState(false);
+
 
     // =====================================================
-    // FETCH EXISTING REFERRAL CODE
+    // FETCH EXISTING REFERRAL
     // =====================================================
 
     useEffect(() => {
@@ -17,19 +20,13 @@ export default function ReferralSection() {
 
             try {
 
-                setError("");
-
-                const response = await axios.get(
-                    "/api/referral/mine"
-                );
-
-                console.log(
-                    "REFERRAL MINE RESPONSE:",
-                    response.data
-                );
+                const response =
+                    await axios.get(
+                        "/api/referral/me"
+                    );
 
                 setReferralCode(
-                    response.data.referralCode || null
+                    response.data.referralCode
                 );
 
             } catch (error) {
@@ -40,7 +37,6 @@ export default function ReferralSection() {
                 );
 
             }
-
         };
 
         fetchReferral();
@@ -57,14 +53,14 @@ export default function ReferralSection() {
         try {
 
             setLoading(true);
-            setError("");
 
-            const response = await axios.post(
-                "/api/referral/create"
-            );
+            const response =
+                await axios.post(
+                    "/api/referral/generate"
+                );
 
             console.log(
-                "REFERRAL CREATE RESPONSE:",
+                "GENERATED REFERRAL:",
                 response.data
             );
 
@@ -79,17 +75,11 @@ export default function ReferralSection() {
                 error
             );
 
-            setError(
-                error.response?.data?.message ||
-                "Failed to generate referral number."
-            );
-
         } finally {
 
             setLoading(false);
 
         }
-
     };
 
 
@@ -101,20 +91,11 @@ export default function ReferralSection() {
 
         if (!referralCode) return;
 
-        try {
+        await navigator.clipboard.writeText(
+            referralCode
+        );
 
-            await navigator.clipboard.writeText(
-                referralCode
-            );
-
-        } catch (error) {
-
-            console.error(
-                "FAILED TO COPY:",
-                error
-            );
-
-        }
+        alert("Referral number copied!");
 
     };
 
@@ -125,60 +106,19 @@ export default function ReferralSection() {
 
             <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
 
-                <div className="flex items-center justify-between gap-4">
+                <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
+                    BLYNK REFERRALS
+                </p>
 
-                    <div>
 
-                        <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
-                            BLYNK REFERRALS
+                {!referralCode ? (
+
+                    <div className="mt-3">
+
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
+                            Generate your personal BLYNK referral number
+                            and share it with your friends.
                         </p>
-
-
-                        {!referralCode ? (
-
-                            <>
-                                <p className="text-lg font-bold text-zinc-900 dark:text-white mt-1">
-                                    You don't have a referral number yet.
-                                </p>
-
-                                <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                                    Generate your personal BLYNK referral number
-                                    and share it with your friends.
-                                </p>
-                            </>
-
-                        ) : (
-
-                            <>
-                                <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
-                                    Your BLYNK Referral Number
-                                </p>
-
-                                <p className="text-2xl font-bold tracking-wider text-purple-600">
-                                    {referralCode}
-                                </p>
-
-                                <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                                    Share your referral number with friends
-                                    and earn referral rewards.
-                                </p>
-                            </>
-
-                        )}
-
-
-                        {error && (
-
-                            <p className="text-sm text-red-500 mt-2">
-                                {error}
-                            </p>
-
-                        )}
-
-                    </div>
-
-
-                    {!referralCode ? (
 
                         <button
                             type="button"
@@ -193,24 +133,43 @@ export default function ReferralSection() {
 
                         </button>
 
-                    ) : (
+                    </div>
 
-                        <button
-                            type="button"
-                            onClick={copyReferral}
-                            className="px-5 py-3 rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700"
-                        >
-                            Copy
-                        </button>
+                ) : (
 
-                    )}
+                    <div className="mt-3">
 
-                </div>
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                            Your BLYNK Referral Number
+                        </p>
+
+                        <div className="flex items-center gap-4 mt-2">
+
+                            <strong className="text-2xl font-bold tracking-wider text-purple-600">
+                                {referralCode}
+                            </strong>
+
+                            <button
+                                type="button"
+                                onClick={copyReferral}
+                                className="px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700"
+                            >
+                                Copy
+                            </button>
+
+                        </div>
+
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
+                            Share this number with friends and earn referral rewards.
+                        </p>
+
+                    </div>
+
+                )}
 
             </div>
 
         </div>
 
     );
-
 }
