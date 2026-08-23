@@ -514,12 +514,12 @@ function Router() {
 
         <Route
           path="/wallet/rewards"
-          element={<WalletPage />}
+          element={<WalletRewardsPage />}
         />
 
         <Route
           path="/wallet/transactions"
-          element={<WalletPage />}
+          element={<WalletTransactionsPage />}
         />
 
 
