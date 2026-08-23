@@ -1,98 +1,101 @@
+// modules/wallet/pages/RedeemPage.jsx
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
 import {
   Gift,
   Coins,
   ArrowLeft,
-  CheckCircle,
   Lock,
   Ticket,
   History
 } from "lucide-react";
 
-const RedeemPage = () => {
-  const [balance, setBalance] = useState({
-    points: 0,
-    tokens: 0
-  });
+import walletApi from "../services/wallet.api";
 
-  const [rewards, setRewards] = useState([]);
+
+const AVAILABLE_REWARDS = [
+
+  {
+    id: "voucher-10",
+    name: "BLYNK R10 Voucher",
+    description:
+      "A BLYNK R10 reward voucher.",
+    type: "VOUCHER",
+    costPoints: 10,
+    value: "R10"
+  },
+
+  {
+    id: "voucher-50",
+    name: "BLYNK R50 Voucher",
+    description:
+      "A BLYNK R50 reward voucher.",
+    type: "VOUCHER",
+    costPoints: 50,
+    value: "R50"
+  },
+
+  {
+    id: "voucher-100",
+    name: "BLYNK R100 Voucher",
+    description:
+      "A BLYNK R100 reward voucher.",
+    type: "VOUCHER",
+    costPoints: 100,
+    value: "R100"
+  },
+
+  {
+    id: "premium-reward",
+    name: "BLYNK Premium Reward",
+    description:
+      "A future premium BLYNK reward.",
+    type: "PREMIUM",
+    costPoints: 500,
+    value: "Premium"
+  }
+
+];
+
+
+export default function RedeemPage() {
+
+  const [wallet, setWallet] = useState(null);
 
   const [loading, setLoading] = useState(true);
-
-  const [redeeming, setRedeeming] = useState(null);
 
   const [message, setMessage] = useState(null);
 
 
   useEffect(() => {
 
-    loadRewards();
+    loadWallet();
 
   }, []);
 
 
-  const loadRewards = async () => {
+  const loadWallet = async () => {
 
     try {
 
       setLoading(true);
 
-      /*
-       * Replace this with your real rewards API
-       * once the endpoint is connected.
-       */
+      const response =
+        await walletApi.getMine();
 
-      setBalance({
-        points: 10,
-        tokens: 1500
-      });
+      const walletData =
+        response?.data?.data ??
+        response?.data ??
+        null;
 
-
-      setRewards([
-
-        {
-          id: "voucher-10",
-          name: "BLYNK R10 Voucher",
-          description: "Redeem your points for a BLYNK voucher.",
-          type: "VOUCHER",
-          costPoints: 10,
-          value: "R10"
-        },
-
-        {
-          id: "voucher-50",
-          name: "BLYNK R50 Voucher",
-          description: "Redeem your points for a R50 voucher.",
-          type: "VOUCHER",
-          costPoints: 50,
-          value: "R50"
-        },
-
-        {
-          id: "voucher-100",
-          name: "BLYNK R100 Voucher",
-          description: "Redeem your points for a R100 voucher.",
-          type: "VOUCHER",
-          costPoints: 100,
-          value: "R100"
-        },
-
-        {
-          id: "future-reward",
-          name: "BLYNK Premium Reward",
-          description: "Future premium BLYNK reward.",
-          type: "PREMIUM",
-          costPoints: 500,
-          value: "Premium"
-        }
-
-      ]);
+      setWallet(walletData);
 
     } catch (error) {
 
       console.error(
-        "REDEEM LOAD ERROR:",
+        "REDEEM WALLET ERROR:",
         error
       );
 
@@ -105,76 +108,45 @@ const RedeemPage = () => {
   };
 
 
-  const redeemReward = async (reward) => {
+  const points =
+    Number(
+      wallet?.points ??
+      wallet?.blynkPoints ??
+      0
+    );
 
-    if (
-      balance.points <
-      reward.costPoints
-    ) {
 
-      setMessage({
-        type: "error",
-        text: "You do not have enough BLYNK points for this reward."
-      });
+  const tokens =
+    Number(
+      wallet?.tokens ??
+      wallet?.blynkTokens ??
+      0
+    );
+
+
+  /*
+   * DO NOT pretend redemption happened.
+   *
+   * Until the real reward API endpoint is connected,
+   * show the user that the reward system is being prepared.
+   */
+
+  const redeemReward = (reward) => {
+
+    if (points < reward.costPoints) {
+
+      setMessage(
+        `You need ${reward.costPoints} BLYNK Points to redeem ${reward.name}.`
+      );
 
       return;
 
     }
 
 
-    try {
-
-      setRedeeming(reward.id);
-
-      setMessage(null);
-
-
-      /*
-       * Connect your real redeem API here.
-       *
-       * Example:
-       *
-       * await rewardApi.redeem(reward.id);
-       *
-       */
-
-
-      await new Promise(
-        resolve => setTimeout(resolve, 700)
-      );
-
-
-      setBalance(previous => ({
-        ...previous,
-        points:
-          previous.points -
-          reward.costPoints
-      }));
-
-
-      setMessage({
-        type: "success",
-        text: `${reward.name} redeemed successfully.`
-      });
-
-
-    } catch (error) {
-
-      console.error(
-        "REDEEM ERROR:",
-        error
-      );
-
-      setMessage({
-        type: "error",
-        text: "We could not complete your redemption."
-      });
-
-    } finally {
-
-      setRedeeming(null);
-
-    }
+    setMessage(
+      `${reward.name} is available for redemption. The BLYNK redemption service is being connected.`
+    );
 
   };
 
@@ -183,9 +155,9 @@ const RedeemPage = () => {
 
     return (
 
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
 
-        <p className="text-gray-500">
+        <p className="font-semibold">
           Loading BLYNK Rewards...
         </p>
 
@@ -198,78 +170,63 @@ const RedeemPage = () => {
 
   return (
 
-    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
 
       <div className="mx-auto max-w-7xl p-4 md:p-6">
 
 
         {/* HEADER */}
 
-        <div className="mb-6">
+        <div className="mb-8">
 
           <Link
-            to="/wallet"
-            className="mb-5 inline-flex items-center gap-2 text-sm text-gray-500 hover:text-black dark:hover:text-white"
+            to="/wallet/rewards"
+            className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition hover:bg-white dark:hover:bg-zinc-900"
           >
 
-            <ArrowLeft size={18} />
+            <ArrowLeft size={17} />
 
-            Back to Wallet
+            Back to BLYNK Rewards
 
           </Link>
 
 
-          <div className="flex items-center gap-4">
-
-            <div className="rounded-2xl border bg-white p-4 shadow-sm dark:bg-zinc-900">
-
-              <Gift
-                size={30}
-                className="text-green-600"
-              />
-
-            </div>
+          <h1 className="mt-6 text-3xl font-bold">
+            Redeem BLYNK Rewards
+          </h1>
 
 
-            <div>
-
-              <h1 className="text-3xl font-bold">
-                Redeem Rewards
-              </h1>
-
-              <p className="mt-1 text-gray-500">
-                Use your BLYNK points to unlock rewards.
-              </p>
-
-            </div>
-
-          </div>
+          <p className="mt-2 text-zinc-500">
+            Use your BLYNK Points for eligible rewards.
+          </p>
 
         </div>
 
 
         {/* BALANCES */}
 
-        <div className="mb-6 grid gap-4 md:grid-cols-2">
+        <div className="mb-8 grid gap-4 md:grid-cols-2">
 
 
           <div className="rounded-2xl border bg-white p-6 shadow-sm dark:bg-zinc-900">
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
 
-              <Coins
-                className="text-yellow-500"
-                size={26}
-              />
+              <div className="rounded-xl border p-3">
+                <Coins
+                  size={25}
+                  className="text-yellow-500"
+                />
+              </div>
 
               <div>
 
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-zinc-500">
                   BLYNK Points
                 </p>
 
                 <p className="text-3xl font-bold">
-                  {balance.points}
+                  {points.toLocaleString()}
                 </p>
 
               </div>
@@ -281,21 +238,23 @@ const RedeemPage = () => {
 
           <div className="rounded-2xl border bg-white p-6 shadow-sm dark:bg-zinc-900">
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
 
-              <Ticket
-                className="text-purple-600"
-                size={26}
-              />
+              <div className="rounded-xl border p-3">
+                <Ticket
+                  size={25}
+                  className="text-purple-600"
+                />
+              </div>
 
               <div>
 
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-zinc-500">
                   BLYNK Tokens
                 </p>
 
                 <p className="text-3xl font-bold">
-                  {balance.tokens}
+                  {tokens.toLocaleString()}
                 </p>
 
               </div>
@@ -311,23 +270,9 @@ const RedeemPage = () => {
 
         {message && (
 
-          <div
-            className={`mb-6 rounded-xl border p-4 ${
-              message.type === "success"
-                ? "border-green-300 bg-green-50 text-green-700"
-                : "border-red-300 bg-red-50 text-red-700"
-            }`}
-          >
+          <div className="mb-6 rounded-xl border bg-white p-4 text-sm dark:bg-zinc-900">
 
-            <div className="flex items-center gap-2">
-
-              {message.type === "success" && (
-                <CheckCircle size={20} />
-              )}
-
-              {message.text}
-
-            </div>
+            {message}
 
           </div>
 
@@ -336,16 +281,16 @@ const RedeemPage = () => {
 
         {/* REWARDS */}
 
-        <div>
+        <section>
 
-          <div className="mb-4">
+          <div className="mb-5">
 
             <h2 className="text-xl font-bold">
-              Available Rewards
+              Available BLYNK Rewards
             </h2>
 
-            <p className="text-sm text-gray-500">
-              Select a reward to redeem.
+            <p className="mt-1 text-sm text-zinc-500">
+              Rewards available through the BLYNK reward programme.
             </p>
 
           </div>
@@ -353,16 +298,10 @@ const RedeemPage = () => {
 
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
 
-
-            {rewards.map((reward) => {
+            {AVAILABLE_REWARDS.map((reward) => {
 
               const canRedeem =
-                balance.points >=
-                reward.costPoints;
-
-
-              const isRedeeming =
-                redeeming === reward.id;
+                points >= reward.costPoints;
 
 
               return (
@@ -376,10 +315,21 @@ const RedeemPage = () => {
 
                     <div className="rounded-xl border p-3">
 
-                      <Gift
-                        size={24}
-                        className="text-green-600"
-                      />
+                      {reward.type === "VOUCHER" ? (
+
+                        <Ticket
+                          size={24}
+                          className="text-green-600"
+                        />
+
+                      ) : (
+
+                        <Gift
+                          size={24}
+                          className="text-purple-600"
+                        />
+
+                      )}
 
                     </div>
 
@@ -396,21 +346,21 @@ const RedeemPage = () => {
                   </h3>
 
 
-                  <p className="mt-2 min-h-[48px] text-sm text-gray-500">
+                  <p className="mt-2 min-h-[48px] text-sm text-zinc-500">
                     {reward.description}
                   </p>
 
 
-                  <div className="mt-5 flex items-center justify-between">
+                  <div className="mt-6 flex items-end justify-between">
 
                     <div>
 
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-zinc-500">
                         Required
                       </p>
 
                       <p className="font-bold">
-                        {reward.costPoints} points
+                        {reward.costPoints.toLocaleString()} BLYNK Points
                       </p>
 
                     </div>
@@ -425,36 +375,30 @@ const RedeemPage = () => {
 
                   <button
                     type="button"
-                    disabled={!canRedeem || isRedeeming}
-                    onClick={() =>
-                      redeemReward(reward)
-                    }
-                    className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-3 font-semibold transition ${
+                    onClick={() => redeemReward(reward)}
+                    disabled={!canRedeem}
+                    className={`mt-6 flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-3 font-semibold transition ${
                       canRedeem
-                        ? "hover:bg-gray-100 dark:hover:bg-zinc-800"
+                        ? "hover:bg-zinc-50 dark:hover:bg-zinc-800"
                         : "cursor-not-allowed opacity-50"
                     }`}
                   >
 
-                    {!canRedeem ? (
-
-                      <>
-                        <Lock size={17} />
-
-                        Not Enough Points
-
-                      </>
-
-                    ) : isRedeeming ? (
-
-                      "Redeeming..."
-
-                    ) : (
+                    {canRedeem ? (
 
                       <>
                         <Gift size={17} />
 
                         Redeem
+
+                      </>
+
+                    ) : (
+
+                      <>
+                        <Lock size={17} />
+
+                        Not Enough Points
 
                       </>
 
@@ -470,26 +414,26 @@ const RedeemPage = () => {
 
           </div>
 
-        </div>
+        </section>
 
 
-        {/* BOTTOM LINKS */}
+        {/* BOTTOM BUTTONS */}
 
         <div className="mt-10 grid gap-4 border-t pt-6 md:grid-cols-2">
 
 
           <Link
             to="/wallet"
-            className="flex items-center justify-between rounded-2xl border bg-white p-5 font-semibold transition hover:bg-gray-50 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+            className="flex items-center justify-between rounded-2xl border bg-white p-5 font-semibold transition hover:bg-zinc-50 dark:bg-zinc-900 dark:hover:bg-zinc-800"
           >
 
-            <div className="flex items-center gap-3">
+            <span className="flex items-center gap-3">
 
               <Coins size={21} />
 
               BLYNK Wallet
 
-            </div>
+            </span>
 
             <ArrowLeft size={18} />
 
@@ -498,21 +442,20 @@ const RedeemPage = () => {
 
           <Link
             to="/wallet/transactions"
-            className="flex items-center justify-between rounded-2xl border bg-white p-5 font-semibold transition hover:bg-gray-50 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+            className="flex items-center justify-between rounded-2xl border bg-white p-5 font-semibold transition hover:bg-zinc-50 dark:bg-zinc-900 dark:hover:bg-zinc-800"
           >
 
-            <div className="flex items-center gap-3">
+            <span className="flex items-center gap-3">
 
               <History size={21} />
 
-              Redemption History
+              Transactions
 
-            </div>
+            </span>
 
             <ArrowLeft size={18} />
 
           </Link>
-
 
         </div>
 
@@ -521,8 +464,4 @@ const RedeemPage = () => {
     </div>
 
   );
-
-};
-
-
-export default RedeemPage;
+}
