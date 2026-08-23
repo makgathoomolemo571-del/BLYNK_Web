@@ -15,13 +15,31 @@ import {
 import walletApi from "../services/wallet.api";
 
 
-const AVAILABLE_REWARDS = [
+/*
+========================================================
+BLYNK REWARD CONVERSION
+========================================================
 
+100 BLYNK Tokens = 1 BLYNK Point
+
+10 BLYNK Points = R10 Voucher
+
+Therefore:
+
+1,000 Tokens  = 10 Points  = R10
+5,000 Tokens  = 50 Points  = R50
+10,000 Tokens = 100 Points = R100
+50,000 Tokens = 500 Points = R500
+100,000 Tokens = 1,000 Points = R1,000
+========================================================
+*/
+
+
+const AVAILABLE_REWARDS = [
   {
     id: "voucher-10",
     name: "BLYNK R10 Voucher",
-    description:
-      "A BLYNK R10 reward voucher.",
+    description: "Redeem 10 BLYNK Points for a R10 voucher.",
     type: "VOUCHER",
     costPoints: 10,
     value: "R10"
@@ -30,8 +48,7 @@ const AVAILABLE_REWARDS = [
   {
     id: "voucher-50",
     name: "BLYNK R50 Voucher",
-    description:
-      "A BLYNK R50 reward voucher.",
+    description: "Redeem 50 BLYNK Points for a R50 voucher.",
     type: "VOUCHER",
     costPoints: 50,
     value: "R50"
@@ -40,23 +57,29 @@ const AVAILABLE_REWARDS = [
   {
     id: "voucher-100",
     name: "BLYNK R100 Voucher",
-    description:
-      "A BLYNK R100 reward voucher.",
+    description: "Redeem 100 BLYNK Points for a R100 voucher.",
     type: "VOUCHER",
     costPoints: 100,
     value: "R100"
   },
 
   {
-    id: "premium-reward",
-    name: "BLYNK Premium Reward",
-    description:
-      "A future premium BLYNK reward.",
-    type: "PREMIUM",
+    id: "voucher-500",
+    name: "BLYNK R500 Voucher",
+    description: "Redeem 500 BLYNK Points for a R500 voucher.",
+    type: "VOUCHER",
     costPoints: 500,
-    value: "Premium"
-  }
+    value: "R500"
+  },
 
+  {
+    id: "voucher-1000",
+    name: "BLYNK R1,000 Voucher",
+    description: "Redeem 1,000 BLYNK Points for a R1,000 voucher.",
+    type: "VOUCHER",
+    costPoints: 1000,
+    value: "R1,000"
+  }
 ];
 
 
@@ -99,6 +122,10 @@ export default function RedeemPage() {
         error
       );
 
+      setMessage(
+        "Unable to load your BLYNK Wallet."
+      );
+
     } finally {
 
       setLoading(false);
@@ -108,35 +135,46 @@ export default function RedeemPage() {
   };
 
 
-  const points =
-    Number(
-      wallet?.points ??
-      wallet?.blynkPoints ??
-      0
-    );
+  /*
+  ========================================================
+  BLYNK BALANCES
+  ========================================================
+  */
 
-
-  const tokens =
-    Number(
-      wallet?.tokens ??
-      wallet?.blynkTokens ??
-      0
-    );
+  const tokens = Number(
+    wallet?.tokens ??
+    wallet?.blynkTokens ??
+    0
+  );
 
 
   /*
-   * DO NOT pretend redemption happened.
-   *
-   * Until the real reward API endpoint is connected,
-   * show the user that the reward system is being prepared.
-   */
+  100 TOKENS = 1 POINT
+  */
+
+  const points = Math.floor(tokens / 100);
+
+
+  /*
+  ========================================================
+  REDEMPTION
+  ========================================================
+
+  IMPORTANT:
+
+  We are NOT pretending that a voucher was created.
+
+  Until the backend redemption endpoint exists,
+  the button only checks eligibility.
+  ========================================================
+  */
 
   const redeemReward = (reward) => {
 
     if (points < reward.costPoints) {
 
       setMessage(
-        `You need ${reward.costPoints} BLYNK Points to redeem ${reward.name}.`
+        `You need ${reward.costPoints.toLocaleString()} BLYNK Points to redeem ${reward.name}.`
       );
 
       return;
@@ -145,7 +183,7 @@ export default function RedeemPage() {
 
 
     setMessage(
-      `${reward.name} is available for redemption. The BLYNK redemption service is being connected.`
+      `${reward.name} is eligible for redemption. BLYNK voucher redemption is being connected to the reward service.`
     );
 
   };
@@ -181,7 +219,7 @@ export default function RedeemPage() {
 
           <Link
             to="/wallet/rewards"
-            className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition hover:bg-white dark:hover:bg-zinc-900"
+            className="inline-flex items-center gap-2 rounded-xl border bg-white px-4 py-2 text-sm font-semibold transition hover:bg-zinc-50 dark:bg-zinc-900 dark:hover:bg-zinc-800"
           >
 
             <ArrowLeft size={17} />
@@ -197,8 +235,47 @@ export default function RedeemPage() {
 
 
           <p className="mt-2 text-zinc-500">
-            Use your BLYNK Points for eligible rewards.
+            Convert your BLYNK Points into eligible BLYNK vouchers.
           </p>
+
+        </div>
+
+
+        {/* CONVERSION INFORMATION */}
+
+        <div className="mb-8 rounded-2xl border bg-white p-5 shadow-sm dark:bg-zinc-900">
+
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+
+            <div>
+
+              <p className="text-sm font-semibold text-zinc-500">
+                BLYNK Reward Conversion
+              </p>
+
+              <p className="mt-1 text-lg font-bold">
+                100 BLYNK Tokens = 1 BLYNK Point
+              </p>
+
+              <p className="text-sm text-zinc-500">
+                10 BLYNK Points = R10 voucher
+              </p>
+
+            </div>
+
+            <div className="rounded-xl border px-5 py-3 text-center">
+
+              <p className="text-xs text-zinc-500">
+                Example
+              </p>
+
+              <p className="font-bold">
+                1,000 Tokens = R10
+              </p>
+
+            </div>
+
+          </div>
 
         </div>
 
@@ -208,15 +285,51 @@ export default function RedeemPage() {
         <div className="mb-8 grid gap-4 md:grid-cols-2">
 
 
+          {/* TOKENS */}
+
           <div className="rounded-2xl border bg-white p-6 shadow-sm dark:bg-zinc-900">
 
             <div className="flex items-center gap-4">
 
               <div className="rounded-xl border p-3">
+
+                <Ticket
+                  size={25}
+                  className="text-purple-600"
+                />
+
+              </div>
+
+              <div>
+
+                <p className="text-sm text-zinc-500">
+                  BLYNK Tokens
+                </p>
+
+                <p className="text-3xl font-bold">
+                  {tokens.toLocaleString()}
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          {/* POINTS */}
+
+          <div className="rounded-2xl border bg-white p-6 shadow-sm dark:bg-zinc-900">
+
+            <div className="flex items-center gap-4">
+
+              <div className="rounded-xl border p-3">
+
                 <Coins
                   size={25}
                   className="text-yellow-500"
                 />
+
               </div>
 
               <div>
@@ -229,32 +342,8 @@ export default function RedeemPage() {
                   {points.toLocaleString()}
                 </p>
 
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <div className="rounded-2xl border bg-white p-6 shadow-sm dark:bg-zinc-900">
-
-            <div className="flex items-center gap-4">
-
-              <div className="rounded-xl border p-3">
-                <Ticket
-                  size={25}
-                  className="text-purple-600"
-                />
-              </div>
-
-              <div>
-
-                <p className="text-sm text-zinc-500">
-                  BLYNK Tokens
-                </p>
-
-                <p className="text-3xl font-bold">
-                  {tokens.toLocaleString()}
+                <p className="mt-1 text-xs text-zinc-500">
+                  100 Tokens = 1 Point
                 </p>
 
               </div>
@@ -286,11 +375,11 @@ export default function RedeemPage() {
           <div className="mb-5">
 
             <h2 className="text-xl font-bold">
-              Available BLYNK Rewards
+              BLYNK Vouchers
             </h2>
 
             <p className="mt-1 text-sm text-zinc-500">
-              Rewards available through the BLYNK reward programme.
+              Use your BLYNK Points for eligible voucher rewards.
             </p>
 
           </div>
@@ -315,27 +404,15 @@ export default function RedeemPage() {
 
                     <div className="rounded-xl border p-3">
 
-                      {reward.type === "VOUCHER" ? (
-
-                        <Ticket
-                          size={24}
-                          className="text-green-600"
-                        />
-
-                      ) : (
-
-                        <Gift
-                          size={24}
-                          className="text-purple-600"
-                        />
-
-                      )}
+                      <Gift
+                        size={24}
+                        className="text-green-600"
+                      />
 
                     </div>
 
-
                     <span className="rounded-full border px-3 py-1 text-xs font-semibold">
-                      {reward.type}
+                      VOUCHER
                     </span>
 
                   </div>
@@ -361,6 +438,10 @@ export default function RedeemPage() {
 
                       <p className="font-bold">
                         {reward.costPoints.toLocaleString()} BLYNK Points
+                      </p>
+
+                      <p className="text-xs text-zinc-500">
+                        {(reward.costPoints * 100).toLocaleString()} Tokens
                       </p>
 
                     </div>
@@ -459,9 +540,11 @@ export default function RedeemPage() {
 
         </div>
 
+
       </div>
 
     </div>
 
   );
+
 }
