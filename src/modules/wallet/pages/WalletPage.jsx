@@ -1,5 +1,4 @@
 // modules/wallet/pages/WalletPage.jsx
-
 import { useEffect, useState } from "react";
 
 import WalletBalance from "../components/WalletBalance";
@@ -7,8 +6,17 @@ import WalletCard from "../components/WalletCard";
 import TransactionCard from "../components/TransactionCard";
 
 import walletApi from "../services/wallet.api";
+
 import CurrentPlan from "../../subscription/components/CurrentPlan";
 import subscriptionApi from "../../subscription/services/subscription.api";
+
+import {
+  Wallet,
+  Gift,
+  Coins,
+  Receipt
+} from "lucide-react";
+
 import { Link } from "react-router-dom";
 
 const WalletPage = () => {
@@ -78,19 +86,59 @@ const loadWallet = async () => {
 
       <WalletBalance wallet={wallet} />
 
-      <div className="flex justify-end">
+<div className="grid grid-cols-2 gap-4 md:grid-cols-4">
 
-<Link
+  <Link
+    to="/wallet"
+    className="flex items-center gap-3 rounded-2xl border bg-white p-4 shadow-sm transition hover:shadow-md dark:bg-zinc-900"
+  >
+    <Wallet className="text-blue-600" />
+    <div>
+      <p className="font-semibold">Wallet</p>
+      <p className="text-sm text-zinc-500">
+        Balance
+      </p>
+    </div>
+  </Link>
 
-to="/monetization"
+  <Link
+    to="/wallet/rewards"
+    className="flex items-center gap-3 rounded-2xl border bg-white p-4 shadow-sm transition hover:shadow-md dark:bg-zinc-900"
+  >
+    <Gift className="text-green-600" />
+    <div>
+      <p className="font-semibold">Rewards</p>
+      <p className="text-sm text-zinc-500">
+        VIG Points & vouchers
+      </p>
+    </div>
+  </Link>
 
-className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold shadow hover:opacity-90"
+  <Link
+    to="/monetization"
+    className="flex items-center gap-3 rounded-2xl border bg-white p-4 shadow-sm transition hover:shadow-md dark:bg-zinc-900"
+  >
+    <Coins className="text-purple-600" />
+    <div>
+      <p className="font-semibold">Monetization</p>
+      <p className="text-sm text-zinc-500">
+        Earn from BLYNK
+      </p>
+    </div>
+  </Link>
 
->
-
-💰 Monetization
-
-</Link>
+  <Link
+    to="/wallet/transactions"
+    className="flex items-center gap-3 rounded-2xl border bg-white p-4 shadow-sm transition hover:shadow-md dark:bg-zinc-900"
+  >
+    <Receipt className="text-orange-600" />
+    <div>
+      <p className="font-semibold">Transactions</p>
+      <p className="text-sm text-zinc-500">
+        Wallet history
+      </p>
+    </div>
+  </Link>
 
 </div>
 
