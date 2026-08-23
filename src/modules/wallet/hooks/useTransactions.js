@@ -1,3 +1,5 @@
+// modules/wallet/hooks/useTransactions.js
+
 import { useCallback, useEffect, useState } from "react";
 import walletApi from "../services/wallet.api";
 
@@ -6,26 +8,43 @@ export default function useTransactions() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const loadTransactions =
-    useCallback(async () => {
-      try {
-        setLoading(true);
+  const loadTransactions = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        const { data } =
-          await walletService.getTransactions();
+      const response = await walletApi.getTransactions();
 
-        setTransactions(data);
-        setError(null);
-      } catch (err) {
-        setError(
-          err?.response?.data?.message ||
-            err.message ||
-            "Failed to load transactions."
-        );
-      } finally {
-        setLoading(false);
-      }
-    }, []);
+      const rawData = response?.data;
+
+      const transactionData =
+        rawData?.data ??
+        rawData?.transactions ??
+        rawData ??
+        [];
+
+      // NEVER allow an object to reach .map()
+      const safeTransactions = Array.isArray(transactionData)
+        ? transactionData
+        : [];
+
+      setTransactions(safeTransactions);
+
+    } catch (err) {
+      console.error("TRANSACTIONS LOAD ERROR:", err);
+
+      setTransactions([]);
+
+      setError(
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to load transactions."
+      );
+
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     loadTransactions();
@@ -35,6 +54,9 @@ export default function useTransactions() {
     transactions,
     loading,
     error,
+
+    // Keep both names so existing components don't break.
     refresh: loadTransactions,
+    getTransactions: loadTransactions,
   };
 }

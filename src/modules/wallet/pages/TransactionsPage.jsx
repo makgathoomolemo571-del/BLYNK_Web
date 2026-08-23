@@ -1,7 +1,13 @@
 // modules/wallet/pages/TransactionsPage.jsx
 
-import { useEffect, useMemo, useState } from "react";
-import { FaArrowDown, FaArrowUp, FaSearch } from "react-icons/fa";
+import { useMemo, useState } from "react";
+import {
+  FaArrowDown,
+  FaArrowUp,
+  FaSearch,
+  FaSyncAlt,
+} from "react-icons/fa";
+
 import useTransactions from "../hooks/useTransactions";
 
 const badgeColors = {
@@ -19,15 +25,37 @@ const badgeColors = {
 };
 
 const amountColor = (type) => {
-  if (["deposit", "credit", "refund", "tip", "commission"].includes(type))
+  if (
+    [
+      "deposit",
+      "credit",
+      "refund",
+      "tip",
+      "commission",
+      "reward",
+      "cashback",
+    ].includes(String(type).toLowerCase())
+  ) {
     return "text-green-600";
+  }
 
   return "text-red-500";
 };
 
 const amountPrefix = (type) => {
-  if (["deposit", "credit", "refund", "tip", "commission"].includes(type))
+  if (
+    [
+      "deposit",
+      "credit",
+      "refund",
+      "tip",
+      "commission",
+      "reward",
+      "cashback",
+    ].includes(String(type).toLowerCase())
+  ) {
     return "+";
+  }
 
   return "-";
 };
@@ -37,200 +65,278 @@ export default function TransactionsPage() {
     transactions,
     loading,
     error,
-    getTransactions,
+    refresh,
   } = useTransactions();
 
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    getTransactions();
-  }, []);
-
   const filtered = useMemo(() => {
-    return transactions.filter((tx) => {
-      const keyword = search.toLowerCase();
+    const list = Array.isArray(transactions)
+      ? transactions
+      : [];
 
+    const keyword = search.trim().toLowerCase();
+
+    if (!keyword) {
+      return list;
+    }
+
+    return list.filter((tx) => {
       return (
-        tx.reference?.toLowerCase().includes(keyword) ||
-        tx.type?.toLowerCase().includes(keyword) ||
-        tx.description?.toLowerCase().includes(keyword) ||
-        tx.status?.toLowerCase().includes(keyword)
+        String(tx?.reference || "")
+          .toLowerCase()
+          .includes(keyword) ||
+
+        String(tx?.type || "")
+          .toLowerCase()
+          .includes(keyword) ||
+
+        String(tx?.description || "")
+          .toLowerCase()
+          .includes(keyword) ||
+
+        String(tx?.status || "")
+          .toLowerCase()
+          .includes(keyword)
       );
     });
   }, [transactions, search]);
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="w-full max-w-7xl mx-auto p-6">
 
-      <div className="flex items-center justify-between mb-8">
+      {/* HEADER */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
 
         <div>
-
           <h1 className="text-3xl font-bold">
             Transactions
           </h1>
 
           <p className="text-zinc-500 mt-1">
-            Wallet activity history
+            Your BLYNK wallet activity history
           </p>
-
         </div>
 
-        <div className="relative w-80">
+        <div className="flex gap-3">
 
-          <FaSearch
-            className="absolute left-3 top-3 text-zinc-400"
-          />
+          <button
+            type="button"
+            onClick={refresh}
+            disabled={loading}
+            className="flex items-center gap-2 rounded-xl border px-4 py-2 font-medium transition hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:hover:bg-zinc-900"
+          >
+            <FaSyncAlt
+              className={loading ? "animate-spin" : ""}
+            />
 
-          <input
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            placeholder="Search..."
-            className="w-full rounded-xl border pl-10 pr-4 py-2 bg-white dark:bg-zinc-900"
-          />
+            Refresh
+          </button>
+
+          <div className="relative w-full md:w-80">
+
+            <FaSearch
+              className="absolute left-3 top-3 text-zinc-400"
+            />
+
+            <input
+              type="text"
+              value={search}
+              onChange={(e) =>
+                setSearch(e.target.value)
+              }
+              placeholder="Search transactions..."
+              className="w-full rounded-xl border border-zinc-300 bg-white py-2 pl-10 pr-4 outline-none focus:border-blue-500 dark:border-zinc-700 dark:bg-zinc-900"
+            />
+
+          </div>
 
         </div>
 
       </div>
 
-      {loading && (
-        <div className="text-center py-20">
-          Loading transactions...
-        </div>
-      )}
-
+      {/* ERROR */}
       {error && (
-        <div className="bg-red-100 text-red-700 rounded-xl p-4">
+        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400">
           {error}
         </div>
       )}
 
-      {!loading &&
-        filtered.length === 0 && (
-          <div className="text-center py-20 text-zinc-500">
-            No transactions found.
+      {/* LOADING */}
+      {loading && (
+        <div className="rounded-2xl border p-12 text-center dark:border-zinc-800">
+          Loading transactions...
+        </div>
+      )}
+
+      {/* EMPTY */}
+      {!loading && filtered.length === 0 && (
+        <div className="rounded-2xl border p-12 text-center dark:border-zinc-800">
+
+          <div className="text-lg font-semibold">
+            No transactions found
           </div>
-        )}
 
-      {!loading &&
-        filtered.length > 0 && (
+          <p className="mt-2 text-zinc-500">
+            Your BLYNK wallet transactions will appear here.
+          </p>
 
-        <div className="overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800">
+        </div>
+      )}
 
-          <table className="w-full">
+      {/* TABLE */}
+      {!loading && filtered.length > 0 && (
 
-            <thead className="bg-zinc-100 dark:bg-zinc-900">
+        <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
 
-              <tr>
+          <div className="overflow-x-auto">
 
-                <th className="text-left px-5 py-4">
-                  Type
-                </th>
+            <table className="w-full min-w-[900px]">
 
-                <th className="text-left px-5 py-4">
-                  Description
-                </th>
+              <thead className="bg-zinc-100 dark:bg-zinc-900">
 
-                <th className="text-left px-5 py-4">
-                  Reference
-                </th>
+                <tr>
 
-                <th className="text-left px-5 py-4">
-                  Status
-                </th>
+                  <th className="px-5 py-4 text-left">
+                    Type
+                  </th>
 
-                <th className="text-right px-5 py-4">
-                  Amount
-                </th>
+                  <th className="px-5 py-4 text-left">
+                    Description
+                  </th>
 
-                <th className="text-right px-5 py-4">
-                  Date
-                </th>
+                  <th className="px-5 py-4 text-left">
+                    Reference
+                  </th>
 
-              </tr>
+                  <th className="px-5 py-4 text-left">
+                    Status
+                  </th>
 
-            </thead>
+                  <th className="px-5 py-4 text-right">
+                    Amount
+                  </th>
 
-            <tbody>
-
-              {filtered.map((tx) => (
-
-                <tr
-                  key={tx.id}
-                  className="border-t border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900"
-                >
-
-                  <td className="px-5 py-5">
-
-                    <div className="flex items-center gap-3">
-
-                      <div
-                        className={`rounded-full p-2 ${
-                          amountPrefix(tx.type) === "+"
-                            ? "bg-green-100"
-                            : "bg-red-100"
-                        }`}
-                      >
-                        {amountPrefix(tx.type) === "+" ? (
-                          <FaArrowDown className="text-green-600" />
-                        ) : (
-                          <FaArrowUp className="text-red-500" />
-                        )}
-                      </div>
-
-                      <span className="capitalize font-medium">
-                        {tx.type.replace("_", " ")}
-                      </span>
-
-                    </div>
-
-                  </td>
-
-                  <td className="px-5">
-                    {tx.description || "-"}
-                  </td>
-
-                  <td className="px-5">
-                    {tx.reference || "-"}
-                  </td>
-
-                  <td className="px-5">
-
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                        badgeColors[tx.status]
-                      }`}
-                    >
-                      {tx.status}
-                    </span>
-
-                  </td>
-
-                  <td
-                    className={`px-5 text-right font-bold ${amountColor(
-                      tx.type
-                    )}`}
-                  >
-                    {amountPrefix(tx.type)}
-                    {tx.currency}{" "}
-                    {Number(tx.amount).toLocaleString()}
-                  </td>
-
-                  <td className="px-5 text-right whitespace-nowrap">
-                    {new Date(
-                      tx.createdAt
-                    ).toLocaleString()}
-                  </td>
+                  <th className="px-5 py-4 text-right">
+                    Date
+                  </th>
 
                 </tr>
 
-              ))}
+              </thead>
 
-            </tbody>
+              <tbody>
 
-          </table>
+                {filtered.map((tx) => {
+
+                  const type =
+                    String(tx?.type || "transaction")
+                      .toLowerCase();
+
+                  const status =
+                    String(tx?.status || "pending")
+                      .toLowerCase();
+
+                  const prefix =
+                    amountPrefix(type);
+
+                  const currency =
+                    tx?.currency || "ZAR";
+
+                  const amount =
+                    Number(tx?.amount || 0);
+
+                  return (
+
+                    <tr
+                      key={
+                        tx?.id ||
+                        tx?._id ||
+                        tx?.reference ||
+                        Math.random()
+                      }
+                      className="border-t border-zinc-200 transition hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+                    >
+
+                      <td className="px-5 py-5">
+
+                        <div className="flex items-center gap-3">
+
+                          <div
+                            className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                              prefix === "+"
+                                ? "bg-green-100 dark:bg-green-900/30"
+                                : "bg-red-100 dark:bg-red-900/30"
+                            }`}
+                          >
+
+                            {prefix === "+" ? (
+                              <FaArrowDown className="text-green-600" />
+                            ) : (
+                              <FaArrowUp className="text-red-500" />
+                            )}
+
+                          </div>
+
+                          <span className="font-medium capitalize">
+                            {type.replace(/_/g, " ")}
+                          </span>
+
+                        </div>
+
+                      </td>
+
+                      <td className="px-5">
+                        {tx?.description || "-"}
+                      </td>
+
+                      <td className="px-5 text-sm text-zinc-500">
+                        {tx?.reference || "-"}
+                      </td>
+
+                      <td className="px-5">
+
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                            badgeColors[status] ||
+                            "bg-zinc-100 text-zinc-600"
+                          }`}
+                        >
+                          {status}
+                        </span>
+
+                      </td>
+
+                      <td
+                        className={`px-5 text-right font-bold ${amountColor(
+                          type
+                        )}`}
+                      >
+                        {prefix}
+                        {currency}{" "}
+                        {amount.toLocaleString()}
+                      </td>
+
+                      <td className="px-5 text-right whitespace-nowrap text-sm text-zinc-500">
+
+                        {tx?.createdAt
+                          ? new Date(
+                              tx.createdAt
+                            ).toLocaleString()
+                          : "-"}
+
+                      </td>
+
+                    </tr>
+
+                  );
+                })}
+
+              </tbody>
+
+            </table>
+
+          </div>
 
         </div>
 

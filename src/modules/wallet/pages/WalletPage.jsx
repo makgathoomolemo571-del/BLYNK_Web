@@ -20,47 +20,60 @@ const WalletPage = () => {
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const loadWallet = async () => {
-    try {
-      setLoading(true);
+ const loadWallet = async () => {
+  try {
+    setLoading(true);
 
-      const [walletRes, subscriptionRes] = await Promise.all([
-        walletApi.getMine(),
-        subscriptionApi.getMine(),
-      ]);
+    const [
+      walletRes,
+      transactionsRes,
+      subscriptionRes
+    ] = await Promise.all([
+      walletApi.getMine(),
+      walletApi.getTransactions(),
+      subscriptionApi.getMine()
+    ]);
 
-      // =========================
-      // WALLET
-      // =========================
+    const walletData =
+      walletRes?.data?.data ??
+      walletRes?.data ??
+      null;
 
-      const walletData =
-        walletRes?.data?.data ??
-        walletRes?.data ??
-        null;
+    const transactionData =
+      transactionsRes?.data?.data ??
+      transactionsRes?.data?.transactions ??
+      transactionsRes?.data ??
+      [];
 
-      setWallet(walletData);
+    const subscriptionData =
+      subscriptionRes?.data?.data ??
+      subscriptionRes?.data ??
+      null;
 
-      // =========================
-      // SUBSCRIPTION
-      // =========================
+    setWallet(walletData);
 
-      const subscriptionData =
-        subscriptionRes?.data?.data ??
-        subscriptionRes?.data ??
-        null;
+    setTransactions(
+      Array.isArray(transactionData)
+        ? transactionData
+        : []
+    );
 
-      setSubscription(subscriptionData);
+    setSubscription(subscriptionData);
 
-    } catch (error) {
-      console.error("WALLET LOAD ERROR:", error);
+  } catch (err) {
+    console.error(
+      "WALLET LOAD ERROR:",
+      err
+    );
 
-      setWallet(null);
-      setSubscription(null);
+    setWallet(null);
+    setTransactions([]);
+    setSubscription(null);
 
-    } finally {
-      setLoading(false);
-    }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     loadWallet();
