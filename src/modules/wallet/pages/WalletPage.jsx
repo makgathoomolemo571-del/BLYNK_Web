@@ -26,39 +26,49 @@ const WalletPage = () => {
   const [subscription, setSubscription] = useState(null);
 
 const loadWallet = async () => {
-    try {
+  try {
+    setLoading(true);
 
-        setLoading(true);
+    const [
+      walletRes,
+      transactionsRes,
+      subscriptionRes
+    ] = await Promise.all([
+      walletApi.getMine(),
+      walletApi.getTransactions(),
+      subscriptionApi.getMine()
+    ]);
 
-        const [
-            walletRes,
-            transactionsRes,
-            subscriptionRes
-        ] = await Promise.all([
+    // Wallet
+    setWallet(
+      walletRes.data?.data ?? walletRes.data
+    );
 
-            walletApi.getMine(),
+    // Transactions MUST be an array
+    const transactionData =
+      transactionsRes.data?.data ??
+      transactionsRes.data?.transactions ??
+      transactionsRes.data ??
+      [];
 
-            walletApi.getTransactions(),
+    setTransactions(
+      Array.isArray(transactionData)
+        ? transactionData
+        : []
+    );
 
-            subscriptionApi.getMine()
+    // Subscription is a single object
+    setSubscription(
+      subscriptionRes.data?.data ??
+      subscriptionRes.data ??
+      null
+    );
 
-        ]);
-
-        setWallet(walletRes.data);
-
-        setTransactions(transactionsRes.data);
-
-        setSubscription(subscriptionRes.data);
-
-    } catch (err) {
-
-        console.error(err);
-
-    } finally {
-
-        setLoading(false);
-
-    }
+  } catch (err) {
+    console.error("WALLET LOAD ERROR:", err);
+  } finally {
+    setLoading(false);
+  }
 };
 
   useEffect(() => {
