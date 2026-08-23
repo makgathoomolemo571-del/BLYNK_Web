@@ -116,8 +116,8 @@ import MarketplaceDetailsPage from "../modules/marketplace/pages/MarketplaceDeta
 // ==========================================
 
 import WalletPage from "../modules/wallet/pages/WalletPage";
-import WalletRewardsPage from "../modules/wallet/pages/WalletRewardsPage";
-import WalletTransactionsPage from "../modules/wallet/pages/WalletTransactionsPage";
+import RewardsPage from "../modules/wallet/pages/RewardsPage";
+import TransactionsPage from "../modules/wallet/pages/TransactionsPage";
 
 // ==========================================
 // SUBSCRIPTIONS
@@ -514,12 +514,12 @@ function Router() {
 
         <Route
           path="/wallet/rewards"
-          element={<WalletRewardsPage />}
+          element={<RewardsPage />}
         />
 
         <Route
           path="/wallet/transactions"
-          element={<WalletTransactionsPage />}
+          element={<TransactionsPage />}
         />
 
 
