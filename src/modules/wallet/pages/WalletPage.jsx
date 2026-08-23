@@ -17,13 +17,14 @@ import {
   Receipt,
   ArrowRight,
   CreditCard,
+  RefreshCw,
 } from "lucide-react";
 
 const WalletPage = () => {
 
-  // =========================
+  // =========================================================
   // STATE
-  // =========================
+  // =========================================================
 
   const [wallet, setWallet] = useState(null);
 
@@ -33,83 +34,158 @@ const WalletPage = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const [error, setError] = useState(null);
 
-  // =========================
+
+  // =========================================================
   // LOAD WALLET
-  // =========================
+  // =========================================================
 
   const loadWallet = async () => {
 
     try {
 
       setLoading(true);
+      setError(null);
 
-      const [
-        walletRes,
-        transactionsRes,
-        subscriptionRes
-      ] = await Promise.all([
-
+      const results = await Promise.allSettled([
         walletApi.getMine(),
-
         walletApi.getTransactions(),
-
-        subscriptionApi.getMine()
-
+        subscriptionApi.getMine(),
       ]);
 
 
-      // =========================
+      // =====================================================
       // WALLET
-      // =========================
+      // =====================================================
 
-      const walletData =
-        walletRes?.data?.data ??
-        walletRes?.data ??
-        null;
+      const walletResult = results[0];
+
+      if (walletResult.status === "fulfilled") {
+
+        const response = walletResult.value;
+
+        const walletData =
+          response?.data?.data ??
+          response?.data ??
+          null;
+
+        setWallet(walletData);
+
+      } else {
+
+        console.error(
+          "WALLET API ERROR:",
+          walletResult.reason
+        );
+
+        setWallet(null);
+
+      }
 
 
-      // =========================
+      // =====================================================
       // TRANSACTIONS
-      // =========================
+      // =====================================================
 
-      const transactionData =
-        transactionsRes?.data?.data ??
-        transactionsRes?.data?.transactions ??
-        transactionsRes?.data ??
-        [];
+      const transactionsResult = results[1];
+
+      if (transactionsResult.status === "fulfilled") {
+
+        const response = transactionsResult.value;
+
+        const rawData = response?.data;
+
+        let transactionData = [];
 
 
-      // =========================
+        // -----------------------------------------------
+        // Possible API response:
+        //
+        // []
+        //
+        // { data: [] }
+        //
+        // { transactions: [] }
+        //
+        // { data: { transactions: [] } }
+        // -----------------------------------------------
+
+        if (Array.isArray(rawData)) {
+
+          transactionData = rawData;
+
+        } else if (Array.isArray(rawData?.data)) {
+
+          transactionData = rawData.data;
+
+        } else if (Array.isArray(rawData?.transactions)) {
+
+          transactionData = rawData.transactions;
+
+        } else if (
+          Array.isArray(rawData?.data?.transactions)
+        ) {
+
+          transactionData = rawData.data.transactions;
+
+        }
+
+
+        // VERY IMPORTANT:
+        // Always save an ARRAY.
+
+        setTransactions(transactionData);
+
+      } else {
+
+        console.error(
+          "TRANSACTIONS API ERROR:",
+          transactionsResult.reason
+        );
+
+        setTransactions([]);
+
+      }
+
+
+      // =====================================================
       // SUBSCRIPTION
-      // =========================
+      // =====================================================
 
-      const subscriptionData =
-        subscriptionRes?.data?.data ??
-        subscriptionRes?.data ??
-        null;
+      const subscriptionResult = results[2];
 
+      if (subscriptionResult.status === "fulfilled") {
 
-      // =========================
-      // SAVE STATE
-      // =========================
+        const response = subscriptionResult.value;
 
-      setWallet(walletData);
+        const subscriptionData =
+          response?.data?.data ??
+          response?.data ??
+          null;
 
-      setTransactions(
-        Array.isArray(transactionData)
-          ? transactionData
-          : []
-      );
+        setSubscription(subscriptionData);
 
-      setSubscription(subscriptionData);
+      } else {
 
+        console.error(
+          "SUBSCRIPTION API ERROR:",
+          subscriptionResult.reason
+        );
 
-    } catch (error) {
+        setSubscription(null);
+
+      }
+
+    } catch (err) {
 
       console.error(
         "WALLET LOAD ERROR:",
-        error
+        err
+      );
+
+      setError(
+        "Unable to load your wallet. Please try again."
       );
 
       setWallet(null);
@@ -117,7 +193,6 @@ const WalletPage = () => {
       setTransactions([]);
 
       setSubscription(null);
-
 
     } finally {
 
@@ -128,9 +203,9 @@ const WalletPage = () => {
   };
 
 
-  // =========================
-  // LOAD ON PAGE OPEN
-  // =========================
+  // =========================================================
+  // LOAD PAGE
+  // =========================================================
 
   useEffect(() => {
 
@@ -139,22 +214,26 @@ const WalletPage = () => {
   }, []);
 
 
-  // =========================
+  // =========================================================
   // LOADING
-  // =========================
+  // =========================================================
 
   if (loading) {
 
     return (
 
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center p-6">
 
         <div className="text-center">
 
           <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-zinc-200 border-t-blue-600" />
 
-          <p className="text-lg font-medium">
+          <p className="text-lg font-semibold">
             Loading your BLYNK Wallet...
+          </p>
+
+          <p className="mt-1 text-sm text-zinc-500">
+            Please wait.
           </p>
 
         </div>
@@ -166,9 +245,9 @@ const WalletPage = () => {
   }
 
 
-  // =========================
-  // NO WALLET
-  // =========================
+  // =========================================================
+  // WALLET ERROR
+  // =========================================================
 
   if (!wallet) {
 
@@ -181,18 +260,29 @@ const WalletPage = () => {
           <Wallet className="mx-auto mb-4 h-12 w-12 text-red-500" />
 
           <h2 className="mb-2 text-xl font-bold">
-            Wallet not found
+            Wallet unavailable
           </h2>
 
           <p className="mb-6 text-sm text-zinc-500">
             We could not load your BLYNK Wallet.
           </p>
 
+          {error && (
+            <p className="mb-4 text-sm text-red-500">
+              {error}
+            </p>
+          )}
+
           <button
+            type="button"
             onClick={loadWallet}
-            className="rounded-xl border px-5 py-3 font-semibold transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
+            className="inline-flex items-center gap-2 rounded-xl border px-5 py-3 font-semibold transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
           >
+
+            <RefreshCw className="h-4 w-4" />
+
             Try Again
+
           </button>
 
         </div>
@@ -204,65 +294,65 @@ const WalletPage = () => {
   }
 
 
-  // =========================
+  // =========================================================
   // PAGE
-  // =========================
+  // =========================================================
 
   return (
 
-    <div className="w-full max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6 p-4 md:p-6">
 
 
-      {/* =========================
+      {/* =====================================================
           HEADER
-      ========================= */}
+      ===================================================== */}
 
-      <div>
+      <header>
 
-        <h1 className="text-2xl md:text-3xl font-bold">
+        <h1 className="text-2xl font-bold md:text-3xl">
           BLYNK Wallet
         </h1>
 
         <p className="mt-1 text-sm text-zinc-500">
-          Manage your balance, rewards, subscription and transactions.
+          Manage your balance, rewards, subscription and
+          transactions.
         </p>
 
-      </div>
+      </header>
 
 
-      {/* =========================
+      {/* =====================================================
           BALANCE
-      ========================= */}
+      ===================================================== */}
 
       <WalletBalance wallet={wallet} />
 
 
-      {/* =========================
+      {/* =====================================================
           WALLET CARD
-      ========================= */}
+      ===================================================== */}
 
       <WalletCard wallet={wallet} />
 
 
-      {/* =========================
+      {/* =====================================================
           QUICK ACTIONS
-      ========================= */}
+      ===================================================== */}
 
       <section>
 
         <h2 className="mb-4 text-xl font-bold">
-          Wallet
+          Wallet Services
         </h2>
 
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
 
           {/* WALLET */}
 
           <Link
             to="/wallet"
-            className="group rounded-2xl border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-zinc-900"
+            className="group rounded-2xl border bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:bg-zinc-900"
           >
 
             <div className="flex items-start justify-between">
@@ -280,7 +370,7 @@ const WalletPage = () => {
             </h3>
 
             <p className="mt-1 text-sm text-zinc-500">
-              View your BLYNK balance.
+              View your BLYNK wallet balance.
             </p>
 
           </Link>
@@ -290,7 +380,7 @@ const WalletPage = () => {
 
           <Link
             to="/wallet/rewards"
-            className="group rounded-2xl border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-zinc-900"
+            className="group rounded-2xl border bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:bg-zinc-900"
           >
 
             <div className="flex items-start justify-between">
@@ -318,7 +408,7 @@ const WalletPage = () => {
 
           <Link
             to="/monetization/dashboard"
-            className="group rounded-2xl border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-zinc-900"
+            className="group rounded-2xl border bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:bg-zinc-900"
           >
 
             <div className="flex items-start justify-between">
@@ -346,7 +436,7 @@ const WalletPage = () => {
 
           <Link
             to="/wallet/transactions"
-            className="group rounded-2xl border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-zinc-900"
+            className="group rounded-2xl border bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:bg-zinc-900"
           >
 
             <div className="flex items-start justify-between">
@@ -374,9 +464,9 @@ const WalletPage = () => {
       </section>
 
 
-      {/* =========================
+      {/* =====================================================
           SUBSCRIPTION
-      ========================= */}
+      ===================================================== */}
 
       {subscription && (
 
@@ -388,7 +478,7 @@ const WalletPage = () => {
 
           <div className="rounded-2xl border bg-white p-5 shadow-sm dark:bg-zinc-900">
 
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
               <div className="flex items-center gap-4">
 
@@ -403,10 +493,13 @@ const WalletPage = () => {
                   </p>
 
                   <p className="text-sm text-zinc-500">
+
                     Status:{" "}
-                    <span className="font-medium text-green-600">
+
+                    <span className="font-semibold text-green-600">
                       {subscription.status || "active"}
                     </span>
+
                   </p>
 
                 </div>
@@ -416,9 +509,9 @@ const WalletPage = () => {
 
               <Link
                 to="/subscriptions"
-                className="rounded-xl border px-4 py-2 text-sm font-semibold transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                className="inline-flex items-center justify-center rounded-xl border px-4 py-2 text-sm font-semibold transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
               >
-                Manage
+                Manage Subscription
               </Link>
 
             </div>
@@ -430,13 +523,13 @@ const WalletPage = () => {
       )}
 
 
-      {/* =========================
+      {/* =====================================================
           TRANSACTIONS
-      ========================= */}
+      ===================================================== */}
 
       <section>
 
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
           <div>
 
@@ -450,12 +543,16 @@ const WalletPage = () => {
 
           </div>
 
+
           <Link
             to="/wallet/transactions"
-            className="hidden sm:flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
           >
+
             View All
+
             <ArrowRight className="h-4 w-4" />
+
           </Link>
 
         </div>
@@ -463,23 +560,8 @@ const WalletPage = () => {
 
         <div className="space-y-3">
 
-          {transactions.length === 0 ? (
-
-            <div className="rounded-2xl border bg-white p-8 text-center dark:bg-zinc-900">
-
-              <Receipt className="mx-auto mb-3 h-10 w-10 text-zinc-400" />
-
-              <h3 className="font-semibold">
-                No transactions yet
-              </h3>
-
-              <p className="mt-1 text-sm text-zinc-500">
-                Your wallet activity will appear here.
-              </p>
-
-            </div>
-
-          ) : (
+          {Array.isArray(transactions) &&
+          transactions.length > 0 ? (
 
             transactions.map((transaction, index) => (
 
@@ -494,61 +576,70 @@ const WalletPage = () => {
 
             ))
 
+          ) : (
+
+            <div className="rounded-2xl border bg-white p-8 text-center shadow-sm dark:bg-zinc-900">
+
+              <Receipt className="mx-auto mb-3 h-10 w-10 text-zinc-400" />
+
+              <h3 className="font-semibold">
+                No transactions yet
+              </h3>
+
+              <p className="mt-1 text-sm text-zinc-500">
+                Your wallet activity will appear here.
+              </p>
+
+            </div>
+
           )}
-
-        </div>
-
-
-        {/* MOBILE VIEW ALL */}
-
-        <div className="mt-4 sm:hidden">
-
-          <Link
-            to="/wallet/transactions"
-            className="flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-3 font-semibold"
-          >
-            View All Transactions
-            <ArrowRight className="h-4 w-4" />
-          </Link>
 
         </div>
 
       </section>
 
 
-      {/* =========================
-          BOTTOM ACTIONS
-      ========================= */}
+      {/* =====================================================
+          BOTTOM ACTION BUTTONS
+      ===================================================== */}
 
-      <section className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+      <section className="grid grid-cols-1 gap-3 border-t pt-6 sm:grid-cols-3">
+
 
         <Link
           to="/subscriptions"
-          className="flex items-center justify-center gap-2 rounded-xl border px-4 py-3 font-semibold transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
+          className="flex items-center justify-center gap-2 rounded-xl border bg-white px-4 py-3 font-semibold shadow-sm transition hover:bg-zinc-50 hover:shadow-md dark:bg-zinc-900 dark:hover:bg-zinc-800"
         >
+
           <CreditCard className="h-5 w-5" />
+
           Manage Subscription
+
         </Link>
 
 
         <Link
           to="/wallet/rewards"
-          className="flex items-center justify-center gap-2 rounded-xl border px-4 py-3 font-semibold transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
+          className="flex items-center justify-center gap-2 rounded-xl border bg-white px-4 py-3 font-semibold shadow-sm transition hover:bg-zinc-50 hover:shadow-md dark:bg-zinc-900 dark:hover:bg-zinc-800"
         >
+
           <Gift className="h-5 w-5" />
+
           View Rewards
+
         </Link>
 
 
         <Link
           to="/support/create"
-          className="flex items-center justify-center gap-2 rounded-xl border px-4 py-3 font-semibold transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
+          className="flex items-center justify-center gap-2 rounded-xl border bg-white px-4 py-3 font-semibold shadow-sm transition hover:bg-zinc-50 hover:shadow-md dark:bg-zinc-900 dark:hover:bg-zinc-800"
         >
+
           Need Help?
+
         </Link>
 
       </section>
-
 
     </div>
 
