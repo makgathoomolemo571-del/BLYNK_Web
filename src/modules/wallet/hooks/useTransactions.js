@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import walletService from "../services/wallet.service";
+import walletApi from "../services/wallet.api";
 
 export default function useTransactions() {
   const [transactions, setTransactions] = useState([]);
