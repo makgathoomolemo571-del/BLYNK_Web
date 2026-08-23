@@ -117,6 +117,7 @@ import MarketplaceDetailsPage from "../modules/marketplace/pages/MarketplaceDeta
 
 import WalletPage from "../modules/wallet/pages/WalletPage";
 import RewardsPage from "../modules/wallet/pages/RewardsPage";
+import RedeemPage from "../modules/wallet/pages/RedeemPage";
 import TransactionsPage from "../modules/wallet/pages/TransactionsPage";
 
 // ==========================================
@@ -510,6 +511,11 @@ function Router() {
         <Route
           path="/wallet"
           element={<WalletPage />}
+        />
+
+         <Route
+          path="/wallet/redeem"
+          element={<RedeemPage />}
         />
 
         <Route
