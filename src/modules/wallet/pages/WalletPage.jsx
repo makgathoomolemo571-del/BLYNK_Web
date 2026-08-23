@@ -166,9 +166,10 @@ const loadWallet = async () => {
           )}
 
           {subscription && (
-    <CurrentPlan
-        subscription={subscription}
-    />
+  <div>
+    <p>{subscription.plan}</p>
+    <p>{subscription.status}</p>
+  </div>
 )}
 
         </div>
