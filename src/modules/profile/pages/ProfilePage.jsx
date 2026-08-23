@@ -232,13 +232,16 @@ const ProfilePage = () => {
         isOwnProfile={isOwnProfile}
       />
 
+<ProfileStats
+  stats={profile.stats}
+/>
 
       {/* =================================================
           REFERRAL NUMBER
       ================================================= */}
 
      <ReferralSection />
-     
+
       {/* =================================================
           PROFILE CONTENT
       ================================================= */}

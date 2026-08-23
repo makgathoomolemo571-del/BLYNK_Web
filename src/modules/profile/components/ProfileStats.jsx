@@ -1,42 +1,81 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const StatBox = ({ label, value }) => (
-  <div className="flex flex-col items-center px-4 py-2">
-    <span className="text-lg font-bold text-zinc-900 dark:text-white">
-      {Number(value || 0).toLocaleString()}
-    </span>
-    <span className="text-xs text-zinc-500 uppercase tracking-wide">
-      {label}
-    </span>
-  </div>
-);
+
 
 const ProfileStats = ({ stats = {} }) => {
-  const {
-    followers = 0,
-    following = 0,
-    posts = 0,
-    reels = 0,
-  } = stats;
+
+  const safeStats = {
+    followers: Number(stats.followers || 0),
+    following: Number(stats.following || 0),
+    friends: Number(stats.friends || 0),
+    posts: Number(stats.posts || 0),
+    reels: Number(stats.reels || 0),
+    stories: Number(stats.stories || 0),
+    podcasts: Number(stats.podcasts || 0),
+    profileViews: Number(stats.profileViews || 0)
+  };
 
   return (
-    <div className="flex justify-around border-y border-zinc-200 dark:border-zinc-800 py-3">
-      <StatBox label="Followers" value={followers} />
-      <StatBox label="Following" value={following} />
-      <StatBox label="Posts" value={posts} />
-      <StatBox label="Reels" value={reels} />
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+
+      <Stat
+        label="Followers"
+        value={safeStats.followers}
+      />
+
+      <Stat
+        label="Following"
+        value={safeStats.following}
+      />
+
+      <Stat
+        label="Friends"
+        value={safeStats.friends}
+      />
+
+      <Stat
+        label="Posts"
+        value={safeStats.posts}
+      />
+
+      <Stat
+        label="Reels"
+        value={safeStats.reels}
+      />
+
+      <Stat
+        label="Stories"
+        value={safeStats.stories}
+      />
+
+      <Stat
+        label="Podcasts"
+        value={safeStats.podcasts}
+      />
+
+      <Stat
+        label="Views"
+        value={safeStats.profileViews}
+      />
+
     </div>
   );
 };
 
-ProfileStats.propTypes = {
-  stats: PropTypes.shape({
-    followers: PropTypes.number,
-    following: PropTypes.number,
-    posts: PropTypes.number,
-    reels: PropTypes.number,
-  }),
-};
+const Stat = ({ label, value }) => (
+  <div className="rounded-2xl border bg-white p-4 text-center shadow-sm dark:bg-zinc-900">
 
-export default React.memo(ProfileStats);
+    <div className="text-2xl font-bold">
+      {value.toLocaleString()}
+    </div>
+
+    <div className="text-sm text-zinc-500">
+      {label}
+    </div>
+
+  </div>
+);
+
+export default ProfileStats;
+
