@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
+import TransactionCard from "../components/TransactionCard";
 import WalletBalance from "../components/WalletBalance";
 import walletApi from "../services/wallet.api";
 import subscriptionApi from "../../subscription/services/subscription.api";
 
 import {
+  Wallet,
   Gift,
   Coins,
   Receipt,
@@ -17,6 +18,7 @@ import {
 
 const WalletPage = () => {
   const [wallet, setWallet] = useState(null);
+  const [transactions, setTransactions] = useState([]);
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
 
